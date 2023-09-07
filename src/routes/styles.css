@@ -38,6 +38,9 @@
   grid-area: nav;
   padding: 2rem;
   width: 10rem;
+  position: fixed;
+  top: 5rem;
+  overflow: auto;
 }
 
 .site-nav a, .site-nav a:visited {
