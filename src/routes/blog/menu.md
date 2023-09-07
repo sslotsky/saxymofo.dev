@@ -1,0 +1,5 @@
+# Foo
+
+## Content
+
+- [Bloggyboy](/blog)

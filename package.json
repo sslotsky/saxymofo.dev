@@ -1,5 +1,6 @@
 {
   "name": "my-qwik-basic-starter",
+  "type": "module",
   "description": "Demo App with Routing built-in (recommended)",
   "engines": {
     "node": ">=15.0.0"
@@ -34,5 +35,12 @@
     "undici": "5.22.1",
     "vite": "4.4.7",
     "vite-tsconfig-paths": "4.2.0"
+  },
+  "dependencies": {
+    "hastscript": "^8.0.0",
+    "rehype-external-links": "^2.1.0",
+    "rehype-pretty-code": "^0.10.0",
+    "shiki": "^0.14.4",
+    "unist-util-visit": "^5.0.0"
   }
 }

@@ -1,0 +1,234 @@
+---
+title: Function Pipelines in TypeScript
+tags:
+  - TypeScript
+author: Sam Slotsky
+date: 2023-08-31
+---
+
+It happens frequently in software: you have a multi-step process that gets
+broken into many mini-processes. Each one is operating on the same input object,
+with some processes augmenting the object in some way. Middleware chains are a
+well known example, but for the sake of this post, let's talk about something
+more people can relate to. Of course I'm talking about pizza! 🍕
+
+In a pizza kitchen, a raw pizza crust gets sent down the line, where it
+eventually gets sauce, cheese, and toppings. These changes have to be applied in
+a certain order before being sent to the oven! If a pizza requires sauce, then
+it can't be sent to the cheese station before that sauce is applied. So how
+could we model something like this in software? In this post, I'll leverage
+TypeScript's type system to define and chain together sequential mini-processes
+where the constraints are enforced and satisfied by the inputs and outputs of
+our function definitions.
+
+## Example API Usage
+
+Every pizza place decides for itself which order to do things in. When the pizza
+arrives at a station, it's a pretty big problem if it's missing items that
+should have already been added. We _could_ define `sauce`, `cheese`, and various
+toppings as optional fields on a pizza object, but if I wanted to design an API
+to build this pizza, I'd prefer to have those constraints reflected in my type
+definitions, rather than have each mini-process operate on a generic pizza
+object with a bunch of optional fields. Maybe something like this?
+
+```ts
+const pizzaBuilder = pizzaBuilder(makeRawCrust(order));
+
+pizzaBuilder
+  .add((crust: RawCrust) => {
+    return addSauce(order, crust);
+  })
+  .add((sauced: CrustWithSauce) => {
+    return addCheese(order, sauced);
+  })
+  .add((cheesed: CrustWithSauceAndCheese) => {
+    return addToppings(order, cheesed);
+  })
+  .cook();
+```
+
+Here we feed a `RawCrust` into a `pizzaBuilder`, and then add onto it one
+mini-process at a time. Each call to `add` takes a process function, but it's
+important to note that it can't be just _any_ function! Here are the type
+constraints:
+
+1. The input to the first processor must be the same type that was passed to the
+   builder (in this case, `RawCrust`)
+1. The input to any other processor must by the same type as the output of the
+   previous processor
+1. The `cook()` function returns the finished product
+
+## Implementation
+
+There's two problems to solve:
+
+1. Implement the API constraints with TypeScript types
+1. Execute the processors
+
+The first is far more interesting so we'll start there. We'll also assume that
+what we're buiding might be useful for more than just cooking great pizza, so
+we'll make the names and initial inputs a bit more generic.
+
+### Enforcing the type chain
+
+For starters, we define a workflow generator that requires some initial input.
+We'll also define the concept of a processor function that takes a generic input
+and output.
+
+```ts
+type Processor<Input, Output> = (input: Input) => Output;
+function workflow<InitialInput>(input: InitialInput) {}
+```
+
+Now let's generalize the problem of how to chain the functions together. In
+TypeScript, there is no way to declare a sequence of functions where the output
+of `F[n]` is the same type as the input of `F[n + 1]`. So instead we'll define
+three generic types: `Input`, `Output`, and `NextInput`. These types will allow
+us to define a function that can dynamically build upon itself each time it's
+used.
+
+```ts
+function process<Input, Output>(processor: Processor<Input, Output>) {
+  function next<NextInput>(nextProcessor: Processor<Output, NextInput>) {
+    return process(nextProcessor);
+  }
+
+  return next;
+}
+```
+
+Note that this doesn't execute our processors yet. It only allows us to chain
+the definitions together, like this:
+
+```ts
+process((initialInput: {}): { thing: number } => {
+  return { thing: 42 };
+})((input): { stringyThing: string } => {
+  return { stringyThing: input.thing.toString() };
+});
+```
+
+In this example we have two processes that modify what started as a blank
+object. We're almost where we want to be with this API already, we just need to
+make it look a bit more like the pizza example and make sure that the input type
+for the first processor matches our initial input.
+
+```ts
+function workflow<InitialInput>(input: InitialInput) {
+  function process<Input, Output>(processor: Processor<Input, Output>) {
+    function next<NextInput>(nextProcessor: Processor<Output, NextInput>) {
+      return process(nextProcessor);
+    }
+
+    return { process: next };
+  }
+
+  function first<Output>(processor: Processor<InitialInput, Output>) {
+    return process(processor);
+  }
+
+  return { process: first };
+}
+
+workflow({})
+  .process((input) => {
+    return { ...input, thing: 42 };
+  })
+  .process((input) => {
+    return { ...input, stringyThing: `the meaning of life is ${input.thing}` };
+  })
+  .process((input) => {
+    return { ...input, againButLouder: input.stringyThing.toUpperCase() };
+  });
+```
+
+This accomplishes the type chaining. All that remains is to build in a way to
+execute these processors in sequence.
+
+### Executing the chain
+
+Again, let's generalize the problem. We have a sequence of functions where the
+output from `F[n - 1]` becomes input to `F[n]`. So for any function in the
+sequence, we can think of all the previous functions as a single function. In
+other words, if a given step has a processor, its build step might look like
+this:
+
+```ts {2,6}
+function step<Input, Output>(
+  buildPrevious: () => Input,
+  processor: Processor<Input, Output>
+) {
+  function build(): Output {
+    return processor(buildPrevious());
+  }
+
+  return { build };
+}
+```
+
+In the example above, `buildPrevious()` executes all the previous processors. If
+we copy the type chaining that we saw earlier into the `step` abstraction above,
+the solution starts to take shape:
+
+```ts
+function step<Input, Output>(
+  buildPrevious: () => Input,
+  processor: Processor<Input, Output>
+) {
+  function build(): Output {
+    return processor(buildPrevious());
+  }
+
+  function process<NextOutput>(nextProcessor: Processor<Output, NextOutput>) {
+    return step(build, nextProcessor);
+  }
+
+  return { build, process };
+}
+```
+
+So now if I have a `step`, I can call `step.process(someProcessor)` to generate
+the next step in the chain, and `step.build()` becomes the `buildPrevious()`
+function for the `nextStep`. We now have a recursively executing chain of
+processors that only needs a seed: 🌱
+
+```ts
+function workflow<InitialInput>(input: InitialInput) {
+  function process<FirstOutput>(
+    processor: Processor<InitialInput, FirstOutput>
+  ) {
+    return step(() => input, processor);
+  }
+
+  return { process };
+}
+```
+
+You can try a working example of this at the
+[TypeScript Playground](https://www.typescriptlang.org/play?#code/C4TwDgpgBACgTgewMYQM6oXAPASQHZgCuwANFAPLFHAB8UAvFABQCWBxAXFPtQJQN1KwagG4AUGIBmhPEmAsEeKKmAQwudqQpViNJmKhQARoRYAbACbwIANwWFUXJv3p0exEgahhEKdJi54ZDQMbHctIWoaMX4Aby9pWXlFY1NLZy5I4ih4w0M4CGBCOCUfYP84JhNzKwK7BAdnXnFDAF8JQ0S5BVLfEKwAOQgAD2As2iY8EeAgv1DAvoqscbIh0fGaOK98wuKlFTUqtIsyKdHZkMxmr3avAqKSnNSasjK5qFbxW67kpQB3TAAa0kZgQfw0LHkAEMzOE9GxqFx8JCWDDwltOjJuik3v0AGIsOAqDb6PLeRbzWAUzAQ6GwzRkAlEsY6WheDF5e57ZSqMBMZwCKAIjzk8qha5tDpQLmPWKi96fMS3JCKFRQBrCbKMAFwYGgv5MWKtXheAB0uPQ-OFwBcdFynN2sqgppd1rIwAAFmwAOZcAAsACYPi0PibDOaKVbNLacttpY6lHKXaa3Ty4D6QAAVL14X1QAAGnugAFsIFC8D71ZIoGYWJJoCxUFAACSxa2mz0+1r54M3MPOi2oKN8QX2nYPRPO10MqBQ71QtgAIWIABkGhYIHAuO2VOnc1mc96OwgAKpgSBwADCUNQEAFira-dN1XS1zEKrwGDMEFNoO9TA1PgRCAA)
+🚀 I encourage you to play around with the type definitions going in and out of
+your processor functions as you imagine any realistic, contrived, or completely
+ridiculous scenarios that it could apply to.
+
+## Conclusion
+
+This post used a simplified example to demonstrate how TypeScript can be
+leveraged to build a strongly typed function pipeline where the output of each
+function is used as the input to the next. There are probably a dozen ways that
+it could be made more practical, including accounting for async functions and
+increasing robustness with some form of resumability or other error recovery.
+It's also worth noting that a pipeline like this requires all processors to
+operate on a single input, which is hard to work around given the fact that a
+function can only return a single output.
+
+And of course, we'll probably never use this to build a delicious pizza. But I
+do think that a scheme like this could make a useful API for middleware chaining
+or other commonly used abstractions like workflow processors and step functions.
+The [zod validation library](https://zod.dev/) has some similar features in its
+validation chaining API, where the output of the validation callback is the
+return type of the validation function. Perhaps by no surprise, it was also an
+inspiration for this post.
+
+I hope you will find this technique useful for a problem that you need to solve,
+or that you perhaps learned a new trick with TypeScript generics. In any case,
+thanks for reading!
