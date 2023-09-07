@@ -1,7 +1,6 @@
 import { component$, Slot, useSignal, useStyles$, useTask$ } from "@builder.io/qwik";
 import { routeLoader$, useContent } from "@builder.io/qwik-city";
 import type { ContentHeading, RequestHandler } from "@builder.io/qwik-city";
-import { createHash } from "crypto";
 import styles from './styles.css?inline';
 import Samo from '~/components/samo.svg?jsx';
 import Home from '~/components/svg/home.svg?jsx';
@@ -94,7 +93,8 @@ export default component$(() => {
     structuredHeadings.value = structure(content.headings || []);
   });
 
-  const gravatarUrl = `https://www.gravatar.com/avatar/${createHash('md5').update('saxosamo@gmail.com').digest('hex')}`;
+  // const hash = 
+  const gravatarUrl = `https://www.gravatar.com/avatar/aa021790422f28010526a0d8973d4315`;
 
   return (
     <div class="site-container">

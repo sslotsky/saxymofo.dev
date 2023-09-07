@@ -16,7 +16,7 @@ export default defineConfig(() => {
         rehypeAutolinkHeadings: true,
       },
       mdx: {
-        providerImportSource: "./src/components/mdx/components",
+        providerImportSource: "~/components/mdx/components",
         rehypePlugins: [
           [() => (tree) => {
             visit(tree, 'element', (node, index, parent) => {
