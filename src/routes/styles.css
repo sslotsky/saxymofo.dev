@@ -48,6 +48,7 @@
   font-weight: bold;
   padding: 0.25rem;
   height: calc(1.5rem + 2px);
+  max-width: calc(100% - 2rem);
   box-sizing: border-box;
   border: 1px solid transparent;
 }
@@ -114,9 +115,12 @@ aside nav ol a:hover, nav ol a:active {
   color: red;
 }
 
+main {
+  padding: 2rem;
+}
+
 article {
   margin-right: 17rem;
-  padding: 2rem;
   font-size: 18px;
 }
 
