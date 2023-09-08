@@ -130,7 +130,10 @@ export default component$(() => {
             <img src={gravatarUrl} height={60} width={60} />
             <div class="details">
               <h5>Sam Slotsky</h5>
-              <p>Software Engineer</p>
+              <div class="role">
+                <p>Software Engineer</p>
+                <small><i>extraordinaire?</i></small>
+              </div>
             </div>
             <a class="twitter-link" href="https://twitter.com/TheSaxyMofo" target="_blank">
               Follow on &#120143;
