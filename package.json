@@ -44,6 +44,7 @@
     "rehype-external-links": "^2.1.0",
     "rehype-pretty-code": "^0.10.0",
     "shiki": "^0.14.4",
-    "unist-util-visit": "^5.0.0"
+    "unist-util-visit": "^5.0.0",
+    "vite-plugin-mkcert": "^1.16.0"
   }
 }

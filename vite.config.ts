@@ -6,10 +6,11 @@ import pretty from "rehype-pretty-code";
 import rehypeExternalLinks from "rehype-external-links";
 import { visit } from 'unist-util-visit';
 import { h } from 'hastscript';
+import mkcert from 'vite-plugin-mkcert';
 
 export default defineConfig(() => {
   return {
-    plugins: [qwikCity({
+    plugins: [mkcert(), qwikCity({
       mdxPlugins: {
         remarkGfm: false,
         rehypeSyntaxHighlight: false,
