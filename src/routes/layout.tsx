@@ -5,6 +5,7 @@ import styles from './styles.css?inline';
 import Samo from '~/components/samo.svg?jsx';
 import Home from '~/components/svg/home.svg?jsx';
 import Writing from '~/components/svg/writing.svg?jsx';
+import Briefcase from '~/components/svg/briefcase.svg?jsx';
 
 export function RenderStructuredList(props: { list: Array<StructuredHeading> }) {
   if (props.list.length === 0) {
@@ -112,6 +113,11 @@ export default component$(() => {
         <h5>
           <a href="/blog">
             <Writing /> Blog
+          </a>
+        </h5>
+        <h5>
+          <a href="/projects">
+            <Briefcase /> Projects
           </a>
         </h5>
       </nav>

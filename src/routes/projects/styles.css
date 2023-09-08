@@ -1,0 +1,28 @@
+h1 {
+  text-align: center;
+  font-size: 4rem;
+}
+
+article {
+  font-family: Georgia;
+}
+
+a.project {
+  color: black;
+}
+
+.project-contents {
+  display: flex;
+}
+
+p {
+  line-height: 1.5rem;
+  width: 50%;
+}
+
+.project-image {
+  min-width: 200px;
+  min-height: 115px;
+  background-size: cover;
+  margin-right: 1rem;
+}
