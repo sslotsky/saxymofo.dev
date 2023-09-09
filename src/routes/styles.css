@@ -3,7 +3,7 @@
   /* grid-template-columns: min-content 1fr; */
   grid-template-areas: 'header header'
                        'nav main';
-  grid-template-columns: 10rem 1fr; 
+  grid-template-columns: 14rem 1fr; 
 }
 
 .site-container header {
@@ -48,8 +48,6 @@
   font-weight: bold;
   padding: 0.25rem;
   height: calc(1.5rem + 2px);
-  max-width: calc(100% - 2rem);
-  box-sizing: border-box;
   border: 1px solid transparent;
 }
 
@@ -76,6 +74,11 @@ main {
 .site-nav h5 > a {
   width: 100%;
   display: block;
+}
+
+.site-nav hr {
+  width: 80%;
+  margin: 1.5rem 0;
 }
 
 aside {
