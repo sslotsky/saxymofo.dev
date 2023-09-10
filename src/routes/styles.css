@@ -14,8 +14,39 @@
   position: sticky;
   top: 0;
   background-color: white;
-  opacity: 0.9;
   z-index: 99;
+  justify-content: space-between;
+}
+
+button {
+  cursor: pointer;
+}
+
+.burger {
+  display: none;
+}
+
+.burger-nav {
+  width: 2rem;
+  position: relative;
+}
+
+.burger.closed .site-nav {
+  display: none;
+}
+
+.burger button {
+  width: 2.5rem;
+  background-color: transparent;
+  border: none;
+}
+
+.burger-nav .site-nav {
+  position: absolute;
+  top: 0;
+  right: 0;
+  background-color: white;
+  filter: invert();
 }
 
 .site-title {
@@ -140,6 +171,24 @@ article > p {
   article {
     max-width: 100%;
     margin-right: unset;
+  }
+
+  .site-container {
+    grid-template-areas: 'header'
+                         'main';
+    grid-template-columns: 1fr; 
+  }
+
+  .site-nav {
+    display: none;
+  }
+
+  .burger {
+    display: block;
+  }
+
+  .burger-nav .site-nav {
+    display: block;
   }
 }
 

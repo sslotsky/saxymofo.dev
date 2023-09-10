@@ -10,6 +10,69 @@ import Github from '~/components/svg/brand-github.svg?jsx';
 import X from '~/components/svg/brand-x.svg?jsx';
 import LinkedIn from '~/components/svg/brand-linkedin.svg?jsx';
 import Envelope from '~/components/svg/envelope.svg?jsx';
+import Hamburger from '~/components/svg/hamburger.svg?jsx';
+
+export const HamburgerMenu = component$(() => {
+  const isOpen = useSignal(false);
+
+  return (
+    <div class={`burger ${isOpen.value ? 'open' : 'closed'}`}>
+      <button onClick$={() => {
+        isOpen.value = !isOpen.value;
+      }}>
+        <Hamburger />
+      </button>
+      <div class="burger-nav">
+        <SiteNav />
+      </div>
+    </div>
+  )
+})
+
+export function SiteNav() {
+  return (
+    <>
+      <nav class="site-nav">
+        <h5>
+          <a href="/">
+            <Home /> Home
+          </a>
+        </h5>
+        <h5>
+          <a href="/blog">
+            <Writing /> Blog
+          </a>
+        </h5>
+        <h5>
+          <a href="/projects">
+            <Briefcase /> Projects
+          </a>
+        </h5>
+        <hr />
+        <h5>
+          <a href="https://github.com/sslotsky" target="_blank" rel="noreferrer">
+            <Github /> Github
+          </a>
+        </h5>
+        <h5>
+          <a href="https://twitter.com/TheSaxyMofo" target="_blank" rel="noreferrer">
+            <X /> X
+          </a>
+        </h5>
+        <h5>
+          <a href="https://www.linkedin.com/in/sam-slotsky-62024519/" target="_blank" rel="noreferrer">
+            <LinkedIn /> LinkedIn
+          </a>
+        </h5>
+        <h5>
+          <a href="mailto:sam@saxymofo.com" target="_blank" rel="noreferrer">
+            <Envelope /> Email
+          </a>
+        </h5>
+      </nav>
+    </>
+  )
+}
 
 export function RenderStructuredList(props: { list: Array<StructuredHeading> }) {
   if (props.list.length === 0) {
@@ -107,45 +170,9 @@ export default component$(() => {
         <a href="/">
           <Samo class="site-logo" />
         </a>
+        <HamburgerMenu />
       </header>
-      <nav class="site-nav">
-        <h5>
-          <a href="/">
-            <Home /> Home
-          </a>
-        </h5>
-        <h5>
-          <a href="/blog">
-            <Writing /> Blog
-          </a>
-        </h5>
-        <h5>
-          <a href="/projects">
-            <Briefcase /> Projects
-          </a>
-        </h5>
-        <hr />
-        <h5>
-          <a href="https://github.com/sslotsky" target="_blank" rel="noreferrer">
-            <Github /> Github
-          </a>
-        </h5>
-        <h5>
-          <a href="https://twitter.com/TheSaxyMofo" target="_blank" rel="noreferrer">
-            <X /> X
-          </a>
-        </h5>
-        <h5>
-          <a href="https://www.linkedin.com/in/sam-slotsky-62024519/" target="_blank" rel="noreferrer">
-            <LinkedIn /> LinkedIn
-          </a>
-        </h5>
-        <h5>
-          <a href="mailto:sam@saxymofo.com" target="_blank" rel="noreferrer">
-            <Envelope /> Email
-          </a>
-        </h5>
-      </nav>
+      <SiteNav />
       <main>
         <article>
           <Slot />
