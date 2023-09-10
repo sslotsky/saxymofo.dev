@@ -28,8 +28,8 @@ export async function sortPosts(imports: Record<string, () => Promise<PostModule
 
   return pairs.sort((a, b) => {
     if (a.post.frontmatter.date && b.post.frontmatter.date) {
-      return new Date(a.post.frontmatter.date).valueOf() -
-        new Date(b.post.frontmatter.date).valueOf();
+      return new Date(b.post.frontmatter.date).valueOf() -
+        new Date(a.post.frontmatter.date).valueOf();
     }
 
     return 0;

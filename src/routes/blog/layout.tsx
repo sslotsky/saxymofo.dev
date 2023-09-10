@@ -15,14 +15,12 @@ export default component$(() => {
 
   return (
     <>
-      <article>
-        <div class="head">
-          <time>{dateString}</time>
-          <small>By {author ?? 'unknown author'}</small>
-        </div>
-        <h1 class="title">{title}</h1>
-        <Slot />
-      </article>
+      <div class="head">
+        <time>{dateString}</time>
+        <small>By {author ?? 'unknown author'}</small>
+      </div>
+      <h1 class="title">{title}</h1>
+      <Slot />
     </>
   );
 });

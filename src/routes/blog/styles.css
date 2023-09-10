@@ -85,3 +85,9 @@ button.copy svg {
 button.copy.copied {
   color: green;
 }
+
+ul li {
+  list-style-type: '𒄉';
+  padding-inline-start: 1ch;
+  margin-top: 0.5rem;
+}

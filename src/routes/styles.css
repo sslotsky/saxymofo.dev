@@ -125,6 +125,7 @@ main {
 article {
   margin-right: 17rem;
   font-size: 18px;
+  padding: 2rem;
 }
 
 article > p {
