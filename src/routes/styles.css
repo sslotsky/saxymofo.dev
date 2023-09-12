@@ -151,16 +151,17 @@ aside nav ol a:hover, nav ol a:active {
 
 main {
   padding: 2rem;
+  overflow-y: scroll;
 }
 
 article {
   margin-right: 17rem;
-  font-size: 18px;
   padding: 2rem;
+  font-size: 1.125rem;
 }
 
-article > p {
-  line-height: 21px;
+article > p, article li {
+  line-height: 1.5rem;
 }
 
 @media (max-width: 1250px) {
@@ -171,6 +172,7 @@ article > p {
   article {
     max-width: 100%;
     margin-right: unset;
+    font-size: 0.8rem;
   }
 
   .site-container {

@@ -1,5 +1,6 @@
 ---
-title: "Interiew Question: Build a Table Of Contents"
+title:
+  "Interiew Question: Build a Table Of Contents"
 tags:
   - TypeScript
   - Interview Question
@@ -7,40 +8,61 @@ author: Sam Slotsky
 date: 2023-09-09
 ---
 
-Like many stories, this one starts with me bombing a tech interview. Years ago I
-had a live coding challenge with some company I don't remember now, but I won't
-forget how anxious and embarrassed I felt as I found myself unable to solve the
-problem. The truth is that I often don't see the right solution to basic
-algorithm problems right away. It can really take time to marinate before I have
-my "aha" moment!
+Like many stories, this one starts with me bombing
+a tech interview. Years ago I had a live coding
+challenge with some company I don't remember now,
+but I won't forget how anxious and embarrassed I
+felt as I found myself unable to solve the
+problem. The truth is that I often don't see the
+right solution to basic algorithm problems right
+away. It can really take time to marinate before I
+have my "aha" moment!
 
-Sometimes, I obsess for some number of days after the interview and eventually
-solve the problem. This is actually not one of those cases 😂 but I ran into the
-problem again recently and figured it out. Slowly. We're talking about an entire
-day of my life. Maybe I'm not a great programmer but it seems unfair that so
-many tech interviewers expect us to solve things like this in just one hour.
+Sometimes, I obsess for some number of days after
+the interview and eventually solve the problem.
+This is actually not one of those cases 😂 but I
+ran into the problem again recently and figured it
+out. Slowly. We're talking about an entire day of
+my life. Maybe I'm not a great programmer but it
+seems unfair that so many tech interviewers expect
+us to solve things like this in just one hour.
 
-Dear reader, please note that I did not have to solve this problem. It was
-already solved for me with a [plugin][rehype-toc]. But when I recognized it as
-the same problem that I'd encountered in that awful interview so long ago, I
-wanted to solve it, mainly to prove that I could, but also with an aim of
-sharing it here, because I take great joy in being a spoiler for interviewers
-with unfair expectations. If you ever find yourself facing an interview question
-like this one, I hope this post leaves you better prepared.
+Dear reader, please note that I did not have to
+solve this problem. It was already solved for me
+with a [plugin][rehype-toc]. But when I recognized
+it as the same problem that I'd encountered in
+that awful interview so long ago, I wanted to
+solve it, mainly to prove that I could, but also
+with an aim of sharing it here, because I take
+great joy in being a spoiler for interviewers with
+unfair expectations. If you ever find yourself
+facing an interview question like this one, I hope
+this post leaves you better prepared.
 
 ## The Challenge
 
-In this problem, we're given an ordered list of headings that we must convert to
-a tree that can be used as a Table Of Contents (TOC) like the one that appears
-on the right side of this page when the screen is wide. For instance, say you
-have a list of heading tags in the order that they appear on a page.
+In this problem, we're given an ordered list of
+headings that we must convert to a tree that can
+be used as a Table Of Contents (TOC) like the one
+that appears on the right side of this page when
+the screen is wide. For instance, say you have a
+list of heading tags in the order that they appear
+on a page.
 
 ```ts
-const orderedHeadings = ["h1", "h2", "h2", "h3", "h4", "h2"];
+const orderedHeadings = [
+  "h1",
+  "h2",
+  "h2",
+  "h3",
+  "h4",
+  "h2",
+];
 ```
 
-Given the above list, you want to transform it into a TOC (Table Of Contents)
-with a structure that looks more like this:
+Given the above list, you want to transform it
+into a TOC (Table Of Contents) with a structure
+that looks more like this:
 
 ```ts
 return [
@@ -74,29 +96,38 @@ return [
 ];
 ```
 
-Maybe you're a much stronger programmer than I am and you already recognize a
-fairly simple solution to this. You might also recognize that, for content
-authored using mdx, [there are already plugins for that][rehype-toc]. But of
-course, that would be cheating for this challenge. So, how do we solve this by
-hand?
+Maybe you're a much stronger programmer than I am
+and you already recognize a fairly simple solution
+to this. You might also recognize that, for
+content authored using mdx, [there are already
+plugins for that][rehype-toc]. But of course, that
+would be cheating for this challenge. So, how do
+we solve this by hand?
 
 ## Solution
 
-My big developer brain often leads me to believe that there's a recursive,
-immutable solution for everything involving list transformations. And maybe
-there is, but I didn't find one in this case. I spent a _whole_ lot of time
-trying, especially considering that I already _had_ a TOC after integrating a
-[mdx plugin][rehype-toc]. So when I got a loop-and-mutate solution working, I
+My big developer brain often leads me to believe
+that there's a recursive, immutable solution for
+everything involving list transformations. And
+maybe there is, but I didn't find one in this
+case. I spent a _whole_ lot of time trying,
+especially considering that I already _had_ a TOC
+after integrating a [mdx plugin][rehype-toc]. So
+when I got a loop-and-mutate solution working, I
 called it a day.
 
-What I eventually figured out is that for any given heading in the list, it's
-easy to look through the rest of the list and figure out what its _parent_
-should be, or if it shouldn't have a parent at all. If you find a parent, then
-you can add the node to the parent's children. That's... basically it.
+What I eventually figured out is that for any
+given heading in the list, it's easy to look
+through the rest of the list and figure out what
+its _parent_ should be, or if it shouldn't have a
+parent at all. If you find a parent, then you can
+add the node to the parent's children. That's...
+basically it.
 
 ### Examples
 
-Consider headings appearing on a page in this order.
+Consider headings appearing on a page in this
+order.
 
 ```plaintext
 0 - h1
@@ -109,16 +140,20 @@ Consider headings appearing on a page in this order.
 7 - h2
 ```
 
-What is the parent node of item at index 7? It's an `h2`, so we only need to
-look backwards through the list until we find an `h1`, which happens to be the
-first item in the list.
+What is the parent node of item at index 7? It's
+an `h2`, so we only need to look backwards through
+the list until we find an `h1`, which happens to
+be the first item in the list.
 
-What about the parent of the item at index 5? It's an `h4`, and a sibling to the
-`h4` located at index 4. Both of these share the same `h3` parent located at
-index 3.
+What about the parent of the item at index 5? It's
+an `h4`, and a sibling to the `h4` located at
+index 4. Both of these share the same `h3` parent
+located at index 3.
 
-The first item in the list has no parent. Of course we know that an `h1` is a
-top level heading, but what if we didn't have any `h1` tags in our list?
+The first item in the list has no parent. Of
+course we know that an `h1` is a top level
+heading, but what if we didn't have any `h1` tags
+in our list?
 
 ```plaintext
 0 - h2
@@ -126,18 +161,24 @@ top level heading, but what if we didn't have any `h1` tags in our list?
 2 - h3
 ```
 
-If we examine the item at index 1, we have to conclude that it's a top level
-heading, because when we search backwards through the list, we won't find an
-element with a lower heading number. This example has two top level nodes, and
-the `h3` at index 2 is a child of the `h2` at index 1.
+If we examine the item at index 1, we have to
+conclude that it's a top level heading, because
+when we search backwards through the list, we
+won't find an element with a lower heading number.
+This example has two top level nodes, and the `h3`
+at index 2 is a child of the `h2` at index 1.
 
 ### Find the parent
 
-Now that the problem is more clear, let's write code that will loop through and
-identify the parent. Instead of an array of strings like `h1`, and `h2`, we'll
-have objects with a `level` property and the `text` that the heading displays.
-We won't enforce proper heading semantics, e.g. our code won't care if an `h5`
-comes after an `h3`. We'll leave that up to the author of the content.
+Now that the problem is more clear, let's write
+code that will loop through and identify the
+parent. Instead of an array of strings like `h1`,
+and `h2`, we'll have objects with a `level`
+property and the `text` that the heading displays.
+We won't enforce proper heading semantics, e.g.
+our code won't care if an `h5` comes after an
+`h3`. We'll leave that up to the author of the
+content.
 
 ```ts
 interface ContentHeading {
@@ -145,7 +186,9 @@ interface ContentHeading {
   text: item.text;
 }
 
-export function structure(list: Array<ContentHeading>) {
+export function structure(
+  list: Array<ContentHeading>
+) {
   // Loop backwards through the list
   for (let i = list.length - 1; i > -1; i--) {
     const item = list[i];
@@ -170,14 +213,16 @@ export function structure(list: Array<ContentHeading>) {
 }
 ```
 
-This code will find the parent for each item, but won't do anything with that
-information. Let's finish this up by adding children to parents and returning
-top level nodes.
+This code will find the parent for each item, but
+won't do anything with that information. Let's
+finish this up by adding children to parents and
+returning top level nodes.
 
 ### Restructuring the list
 
 ```ts {8-13, 33-37, 40}
-interface StructuredHeading extends ContentHeading {
+interface StructuredHeading
+  extends ContentHeading {
   children: Array<StructuredHeading>;
 }
 
@@ -185,11 +230,12 @@ export function structure(
   unstructuredList: Array<ContentHeading>
 ): Array<StructuredHeading> {
   const items = [];
-  const list: Array<StructuredHeading> = unstructuredList.map((item) => ({
-    level: item.level,
-    text: item.text,
-    children: [],
-  }));
+  const list: Array<StructuredHeading> =
+    unstructuredList.map((item) => ({
+      level: item.level,
+      text: item.text,
+      children: [],
+    }));
 
   for (let i = list.length - 1; i > -1; i--) {
     const item = list[i];
@@ -220,14 +266,16 @@ export function structure(
 }
 ```
 
-And that's really it! We've restructured the list just how we want it, so the
-next logical step is to display it.
+And that's really it! We've restructured the list
+just how we want it, so the next logical step is
+to display it.
 
 ### Render the list
 
-Now that we have a tree structure, recursive logic feels a bit more obvious,
-especially if we're using a component model to build our UI. Here's an example
-using Qwik 👇
+Now that we have a tree structure, recursive logic
+feels a bit more obvious, especially if we're
+using a component model to build our UI. Here's an
+example using Qwik 👇
 
 ```tsx
 export function RenderStructuredList(props: {
@@ -243,7 +291,9 @@ export function RenderStructuredList(props: {
         return (
           <li key={index}>
             {item.text}
-            <RenderStructuredList list={item.children} />
+            <RenderStructuredList
+              list={item.children}
+            />
           </li>
         );
       })}
@@ -252,59 +302,85 @@ export function RenderStructuredList(props: {
 }
 ```
 
-That's really all it takes: a nested loop and a recursive component. You can see
-this all together in [the main layout file for this website][complete-example].
-It seems simple in hindsight, and I think that good solutions to these problems
-usually _are_ simple in the sense that they lack complexity. But that doesn't
+That's really all it takes: a nested loop and a
+recursive component. You can see this all together
+in [the main layout file for this
+website][complete-example]. It seems simple in
+hindsight, and I think that good solutions to
+these problems usually _are_ simple in the sense
+that they lack complexity. But that doesn't
 necessarily mean they are easy to find!
 
 ## There's a plugin for that!
 
-To be sure, the simplest way by far to add a TOC to my blog posts was to use
-[the rehype-toc plugin][rehype-toc]. If you haven't used [rehype
-plugins][rehype-plugins], I strongly recommend trying it. Any transformation
-that you might imagine making to your mdx output is either covered by an
-existing plugin or possible by writing your own. This website uses [one such
-custom plugin][clipboard-plugin] to add a copy-to-clipboard button to the code
-snippets in the blog posts.
+To be sure, the simplest way by far to add a TOC
+to my blog posts was to use [the rehype-toc
+plugin][rehype-toc]. If you haven't used [rehype
+plugins][rehype-plugins], I strongly recommend
+trying it. Any transformation that you might
+imagine making to your mdx output is either
+covered by an existing plugin or possible by
+writing your own. This website uses [one such
+custom plugin][clipboard-plugin] to add a
+copy-to-clipboard button to the code snippets in
+the blog posts.
 
-The TOC plugin [exposes options][rehype-toc-options] that allow you to customize
-the output however you like. I had this plugin integrated early on in the
-development of my blog, but as I was reading through Qwik docs I learned about
-[the `useContent` hook][use-content-qwik], which returns the ordered list of
-headings. It was then that I recognized the same problem that I'd been
-challenged with at an interview years prior. One advantage of using the data
-provided by Qwik is the flexibility to put the TOC anywhere I want on the page,
-and more direct control over what actually gets rendered.
+The TOC plugin [exposes
+options][rehype-toc-options] that allow you to
+customize the output however you like. I had this
+plugin integrated early on in the development of
+my blog, but as I was reading through Qwik docs I
+learned about [the `useContent`
+hook][use-content-qwik], which returns the ordered
+list of headings. It was then that I recognized
+the same problem that I'd been challenged with at
+an interview years prior. One advantage of using
+the data provided by Qwik is the flexibility to
+put the TOC anywhere I want on the page, and more
+direct control over what actually gets rendered.
 
 ## Conclusion
 
-I like writing about interview questions that I've found challenging. I think it
-helps prepare me for future interviews, and I hope it helps prepare readers
-similarly. With any luck, you'll come across a question like this in the future
-and remember how to solve it. Here are some key takeaways for me:
+I like writing about interview questions that I've
+found challenging. I think it helps prepare me for
+future interviews, and I hope it helps prepare
+readers similarly. With any luck, you'll come
+across a question like this in the future and
+remember how to solve it. Here are some key
+takeaways for me:
 
-- Don't be afraid to just mutate stuff in a loop. You don't need to seek a
-  recursive solution just because you suspect there is one. Find the most
-  straightforward way to solve the problem, and maybe you'll find a way to
-  generalize it into an elegant recursive expression later on (or maybe not, and
-  that's ok).
-- Start with the first thing you can deduce and build from there. In this case,
-  realizing that you can identify any item's parent by moving backward through
-  the list is key to solving the problem.
-- Even if you've done this professionally for 14 years and did pretty darn well
-  back in school, you might not see correct solutions to simple algorithm
-  problems right away. Try not fo feel bad about it.
-- The rehype ecosystem is awesome and you should leverage it as much as
-  possible. Don't be like me, please. Spare yourself. But also, no regrets.
+- Don't be afraid to just mutate stuff in a loop.
+  You don't need to seek a recursive solution just
+  because you suspect there is one. Find the most
+  straightforward way to solve the problem, and
+  maybe you'll find a way to generalize it into an
+  elegant recursive expression later on (or maybe
+  not, and that's ok).
+- Start with the first thing you can deduce and
+  build from there. In this case, realizing that
+  you can identify any item's parent by moving
+  backward through the list is key to solving the
+  problem.
+- Even if you've done this professionally for 14
+  years and did pretty darn well back in school,
+  you might not see correct solutions to simple
+  algorithm problems right away. Try not fo feel
+  bad about it.
+- The rehype ecosystem is awesome and you should
+  leverage it as much as possible. Don't be like
+  me, please. Spare yourself. But also, no
+  regrets.
 - Loops are great, btw.
 
 [complete-example]:
   https://github.com/sslotsky/saxymofo.dev/blob/b1c454ceb4e34ddf019e6efe1d09f091efe5477a/src/routes/layout.tsx#L14-L72
-[rehype-toc]: https://github.com/JS-DevTools/rehype-toc
+[rehype-toc]:
+  https://github.com/JS-DevTools/rehype-toc
 [rehype-plugins]:
   https://github.com/rehypejs/rehype/blob/main/doc/plugins.md#list-of-plugins
 [clipboard-plugin]:
   https://github.com/sslotsky/saxymofo.dev/blob/b1c454ceb4e34ddf019e6efe1d09f091efe5477a/vite.config.ts#L22-L46
-[rehype-toc-options]: https://github.com/JS-DevTools/rehype-toc#options
-[use-content-qwik]: https://qwik.builder.io/docs/api/#usecontent
+[rehype-toc-options]:
+  https://github.com/JS-DevTools/rehype-toc#options
+[use-content-qwik]:
+  https://qwik.builder.io/docs/api/#usecontent
