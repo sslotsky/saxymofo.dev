@@ -21,6 +21,10 @@ pre {
   overflow: scroll;
 }
 
+pre > code {
+  display: grid;
+}
+
 h1.title {
   text-align: center;
   font-size: 300%;
