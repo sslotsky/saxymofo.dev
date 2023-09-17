@@ -1,9 +1,8 @@
 .site-container {
   display: grid;
-  /* grid-template-columns: min-content 1fr; */
   grid-template-areas: 'header header'
                        'nav main';
-  grid-template-columns: 14rem 1fr; 
+  grid-template-columns: 12rem 1fr;
 }
 
 .site-container header {
@@ -67,7 +66,8 @@ button {
 
 .site-nav {
   grid-area: nav;
-  padding: 2rem;
+  padding-left: 2rem;
+  padding-top: 2rem;
   width: 10rem;
   position: fixed;
   top: 5rem;
@@ -103,12 +103,10 @@ main {
 }
 
 .site-nav h5 > a {
-  width: 100%;
   display: block;
 }
 
 .site-nav hr {
-  width: 80%;
   margin: 1.5rem 0;
 }
 
@@ -156,7 +154,6 @@ main {
 
 article {
   margin-right: 17rem;
-  padding: 2rem;
   font-size: 1.125rem;
 }
 
@@ -189,12 +186,14 @@ article > p, article li {
 
   .burger-nav .site-nav {
     display: block;
+    padding: 1rem;
+    border-radius: 4px;
   }
 }
 
 @media (max-width: 900px) {
   article {
-    font-size: 0.8rem;
+    font-size: 0.95rem;
   }
 }
 
