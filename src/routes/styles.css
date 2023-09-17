@@ -149,7 +149,7 @@ aside nav ol a:hover, nav ol a:active {
 
 main {
   padding: 2rem;
-  overflow-y: scroll;
+  overflow-y: auto;
 }
 
 article {

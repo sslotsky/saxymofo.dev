@@ -18,7 +18,7 @@ pre {
   font-size: 1rem;
   padding-top: 0.5rem;
   padding-bottom: 0.5rem;
-  overflow: scroll;
+  overflow: auto;
 }
 
 pre > code {
