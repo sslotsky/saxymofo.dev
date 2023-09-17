@@ -1,5 +1,11 @@
 ---
 title: Function Pipelines in TypeScript
+description:
+  In this post I'll show you a way to use TypeScript
+  generics to define a function pipeline, where the output
+  of each function is used as input to the next. To keep
+  things grounded in more appealing terms, we'll use our
+  pipeline to build a pizza.
 tags:
   - TypeScript
 author: Sam Slotsky
@@ -8,11 +14,11 @@ date: 2023-08-31
 
 It happens frequently in software: you have a multi-step
 process that gets broken into many mini-processes. Each one
-is operating on the same input object, with some processes
-augmenting the object in some way. Middleware chains are a
-well known example, but for the sake of this post, let's
-talk about something more people can relate to. Of course
-I'm talking about pizza! 🍕
+is operating on the same input object, with some
+processesaugmenting the object in some way. Middleware
+chains are a well known example, but for the sake of this
+post, let's talk about something more people can relate to.
+Of course I'm talking about pizza! 🍕
 
 In a pizza kitchen, a raw pizza crust gets sent down the
 line, where it eventually gets sauce, cheese, and toppings.

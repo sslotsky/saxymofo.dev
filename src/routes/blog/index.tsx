@@ -15,6 +15,7 @@ interface PostModule {
   default: () => JSXChildren,
   frontmatter: {
     title?: string,
+    description?: string,
     date?: string,
   }
 }
@@ -37,12 +38,7 @@ export async function sortPosts(imports: Record<string, () => Promise<PostModule
 }
 
 export default component$(() => {
-  const posts = import.meta.glob<{
-    default: () => JSXChildren,
-    frontmatter: {
-      title: string,
-    }
-  }>('./**/*.mdx');
+  const posts = import.meta.glob<PostModule>('./**/*.mdx');
 
   const sorted = sortPosts(posts);
   return (
@@ -54,11 +50,16 @@ export default component$(() => {
           return (
             <div key={i} class="blog-preview">
               <h1><a href={`/blog/${path}`}>{post.frontmatter.title}</a></h1>
-              {post.default()}
-              <div class="bottom" />
+              {post.frontmatter.description ? (
+                <p>{post.frontmatter.description}</p>
+              ) : (
+                <>
+                  {post.default()}
+                  <div class="bottom" />
+                </>
+              )}
             </div>
           );
-
         })
       })}
     </>
