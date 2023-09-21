@@ -1,5 +1,5 @@
 import { component$, Slot, useSignal, useStyles$, useTask$ } from "@builder.io/qwik";
-import { routeLoader$, useContent } from "@builder.io/qwik-city";
+import { routeLoader$, useContent, useDocumentHead, useLocation } from "@builder.io/qwik-city";
 import type { ContentHeading, RequestHandler } from "@builder.io/qwik-city";
 import styles from './styles.css?inline';
 import Samo from '~/components/samo.svg?jsx';
@@ -7,7 +7,7 @@ import Home from '~/components/svg/home.svg?jsx';
 import Writing from '~/components/svg/writing.svg?jsx';
 import Briefcase from '~/components/svg/briefcase.svg?jsx';
 import Github from '~/components/svg/brand-github.svg?jsx';
-import X from '~/components/svg/brand-x.svg?jsx';
+import Twitter from '~/components/svg/brand-twitter.svg?jsx';
 import LinkedIn from '~/components/svg/brand-linkedin.svg?jsx';
 import Envelope from '~/components/svg/envelope.svg?jsx';
 import Hamburger from '~/components/svg/hamburger.svg?jsx';
@@ -56,7 +56,7 @@ export function SiteNav() {
         </h5>
         <h5>
           <a href="https://twitter.com/TheSaxyMofo" target="_blank" rel="noreferrer">
-            <X /> X
+            <Twitter /> Twitter
           </a>
         </h5>
         <h5>
@@ -155,13 +155,16 @@ export default component$(() => {
   useStyles$(styles);
   const structuredHeadings = useSignal<Array<StructuredHeading>>([]);
   const content = useContent();
+  const { meta, title } = useDocumentHead();
+  const loc = useLocation();
   useTask$(({ track }) => {
     track(() => content.headings);
 
     structuredHeadings.value = structure(content.headings || []);
   });
 
-  // const hash = 
+  const featuredImage = meta.find((m) => m.property === 'og:image');
+
   const gravatarUrl = `https://www.gravatar.com/avatar/aa021790422f28010526a0d8973d4315`;
 
   return (
@@ -179,17 +182,30 @@ export default component$(() => {
         </article>
         <aside>
           <div class="my-card">
-            <img src={gravatarUrl} height={60} width={60} />
-            <div class="details">
-              <h5>Sam Slotsky</h5>
-              <div class="role">
-                <p>Software Engineer</p>
-                <small><i>extraordinaire?</i></small>
-              </div>
-            </div>
-            <a class="twitter-link" href="https://twitter.com/TheSaxyMofo" target="_blank">
-              Follow on &#120143;
-            </a>
+            {featuredImage?.content ? (
+              <>
+                <img class="featured" src={new URL(featuredImage.content, loc.url.origin).href} height={135} width={225} />
+                <a class="twitter-link" href={`https://twitter.com/intent/tweet?text=${title} ${loc.url.href}`} target="_blank">
+                  <Twitter />
+                  Share on Twitter
+                </a>
+              </>
+            ) : (
+              <>
+                <img class="gravatar" src={gravatarUrl} height={60} width={60} />
+                <div class="details">
+                  <h5>Sam Slotsky</h5>
+                  <div class="role">
+                    <p>Software Engineer</p>
+                    <small><i>extraordinaire?</i></small>
+                  </div>
+                </div>
+                <a class="twitter-link" href="https://twitter.com/TheSaxyMofo" target="_blank">
+                  <Twitter />
+                  Follow on Twiter
+                </a>
+              </>
+            )}
           </div>
           {content.headings && (
             <nav>

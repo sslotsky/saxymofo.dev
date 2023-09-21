@@ -207,9 +207,14 @@ article > p, article li {
   background-color: black;
 }
 
-.my-card img {
+.my-card img.gravatar {
   border-radius: 50%;
   border: 2px solid white;
+}
+
+.my-card img.featured {
+  width: 100%;
+  object-fit: cover;
 }
 
 .my-card .role {
@@ -261,6 +266,16 @@ article > p, article li {
 }
 
 .site-nav h5 svg {
+  width: 1rem;
+  margin-right: 0.5rem;
+}
+
+.twitter-link {
+  display: flex;
+  align-items: center;
+}
+
+.twitter-link svg {
   width: 1rem;
   margin-right: 0.5rem;
 }
