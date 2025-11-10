@@ -9,6 +9,16 @@ export interface Project {
 }
 
 export const projects: Project[] = [{
+  title: 'Alfred',
+  url: 'https://alfred.saxymofo.dev/',
+  imagePath: 'alfred_with_bgc.png',
+  description: `
+  A chat bot. Because of course I made a chat bot.
+
+  Alfred is here to answer your questions, and he likes to give you complete
+  insight into his thought process.
+`
+}, {
   title: 'What a Drag',
   url: 'https://what-a-drag.saxymofo.dev/',
   imagePath: 'what-a-drag.png',
