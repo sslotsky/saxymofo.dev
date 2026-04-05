@@ -36,10 +36,9 @@
     "compression": "^1.7.4",
     "eslint": "8.57.0",
     "eslint-plugin-qwik": "^1.19.2",
-    "express": "4.18.2",
+    "express": "4.22.1",
     "prettier": "3.0.0",
     "typescript": "5.1.6",
-    "undici": "5.22.1",
     "vite": "^5.0.0",
     "vite-tsconfig-paths": "4.2.0"
   },
