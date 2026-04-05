@@ -8,6 +8,9 @@
 node_modules
 *.local
 
+# Vite
+vite.config.ts.timestamp-*
+
 # Cache
 .cache
 .mf
