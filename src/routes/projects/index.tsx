@@ -9,6 +9,16 @@ export interface Project {
 }
 
 export const projects: Project[] = [{
+  title: 'Lumitone',
+  url: 'https://lumitone.saxymofo.dev/',
+  imagePath: 'lumitone.png',
+  description: `
+    Play, record, and share music on a web based synth.  
+
+    Control the virtual keyboard with your computer mouse or keyboard, or plug
+    in your own MIDI controller. 
+  `
+}, {
   title: 'Alfred',
   url: 'https://alfred.saxymofo.dev/',
   imagePath: 'alfred_with_bgc.png',
