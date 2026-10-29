@@ -1,13 +1,13 @@
-FROM debian:bullseye as builder
+FROM debian:bookworm AS builder
 
 ARG NODE_VERSION=22.20.0
 
-RUN apt-get update; apt install -y curl
+RUN apt-get update && apt-get install -y --no-install-recommends ca-certificates curl
 RUN curl https://get.volta.sh | bash
 ENV VOLTA_HOME /root/.volta
 ENV PATH /root/.volta/bin:$PATH
 RUN volta install node@${NODE_VERSION}
-RUN npm i -g pnpm
+RUN npm i -g pnpm@10
 
 #######################################################################
 
@@ -23,7 +23,7 @@ ENV NODE_ENV production
 COPY . .
 
 RUN pnpm install --production=false && npm run build.client && npm run build.server
-FROM debian:bullseye
+FROM debian:bookworm
 
 LABEL fly_launch_runtime="nodejs"
 
