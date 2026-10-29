@@ -41,8 +41,9 @@ export const projects: Project[] = [{
   url: 'https://strongly-typed.saxymofo.dev/',
   imagePath: 'strongly-typed.png',
   description: `
-    Type in the words as they fall from the sky to shoot them down before
-    they destroy your base. Zap the bonus to capture all the words on the screen!
+    Type the words as they fall to catch them before they hit the ground. Sow
+    native seeds on an autumn lawn, call tunes at a jazz club, or fire orders
+    in a smokehouse kitchen, each with its own bonuses and sounds.
   `
 }, {
   title: 'So Fly',
