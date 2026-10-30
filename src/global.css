@@ -1,19 +1,112 @@
+@import "@fontsource-variable/fraunces/opsz.css";
+@import "@fontsource-variable/inter/index.css";
+
+:root {
+  --ink: #121317;
+  --ink-raised: #1b1d23;
+  --ink-line: #2c2f38;
+  --smoke: #a7abb6;
+  --cream: #f2ece1;
+  --brass: #d6ac57;
+  --brass-bright: #f0c96f;
+  --plum: #c47aa8;
+  --font-display: "Fraunces Variable", Georgia, serif;
+  --font-body: "Inter Variable", system-ui, -apple-system, "Segoe UI",
+    sans-serif;
+  --measure: 42rem;
+  --page: 70rem;
+  color-scheme: dark;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
 html {
-  line-height: 1;
   -webkit-text-size-adjust: 100%;
-  -moz-tab-size: 4;
-  -o-tab-size: 4;
   tab-size: 4;
+  scroll-padding-top: 5rem;
 }
 
 body {
-  padding: 0;
   margin: 0;
-  line-height: inherit;
-  font-family: Arial, sans-serif;
+  background: radial-gradient(
+      60rem 40rem at 85% -10%,
+      rgba(214, 172, 87, 0.12),
+      transparent 60%
+    ),
+    radial-gradient(
+      50rem 40rem at -10% 110%,
+      rgba(196, 122, 168, 0.08),
+      transparent 60%
+    ),
+    var(--ink);
+  background-attachment: fixed;
+  color: var(--cream);
+  font-family: var(--font-body);
+  font-size: 1.0625rem;
+  line-height: 1.65;
 }
 
-h1, h2, h3 {
-  font-family: Georgia;
-  font-weight: normal;
+h1,
+h2,
+h3,
+h4 {
+  font-family: var(--font-display);
+  font-weight: 600;
+  line-height: 1.15;
+  letter-spacing: -0.01em;
+  margin: 0 0 0.5em;
+}
+
+h1 {
+  font-size: clamp(2.25rem, 1.6rem + 2.6vw, 3.5rem);
+}
+
+h2 {
+  font-size: clamp(1.5rem, 1.25rem + 1vw, 2rem);
+  margin-top: 1.75em;
+}
+
+h3 {
+  font-size: 1.3rem;
+  margin-top: 1.5em;
+}
+
+p {
+  margin: 0 0 1.1em;
+}
+
+a {
+  color: var(--brass-bright);
+  text-decoration-color: rgba(240, 201, 111, 0.4);
+  text-underline-offset: 0.18em;
+}
+
+a:hover {
+  text-decoration-color: currentColor;
+}
+
+:focus-visible {
+  outline: 2px solid var(--brass-bright);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+code {
+  font-size: 0.9em;
+}
+
+:not(pre) > code {
+  background: var(--ink-raised);
+  border: 1px solid var(--ink-line);
+  border-radius: 4px;
+  padding: 0.1em 0.35em;
 }

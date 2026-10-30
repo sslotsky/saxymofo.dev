@@ -1,4 +1,5 @@
 import { component$, useStyles$ } from "@builder.io/qwik";
+import type { DocumentHead } from "@builder.io/qwik-city";
 import styles from './styles.css?inline';
 
 export interface Project {
@@ -50,26 +51,25 @@ export default component$(() => {
   useStyles$(styles);
   return (
     <>
-      <h1>Projects</h1>
-      <p>Some things I've built mostly for fun</p>
-      {projects.map((project, i) => {
-        return (
-          <a class="project" key={i} href={project.url} target="_blank">
-            <div>
-              <h2>{project.title}</h2>
-              <div class="project-contents">
-                <div
-                  class="project-image"
-                  style={{
-                    backgroundImage: `url(/${project.imagePath})`,
-                  }}
-                />
-                <p>{project.description}</p>
-              </div>
+      <div class="projects-intro">
+        <h1>Projects</h1>
+        <p>Some things I've built, mostly for fun.</p>
+      </div>
+      <div class="project-grid">
+        {projects.map((project) => (
+          <a class="project" key={project.title} href={project.url} target="_blank" rel="noreferrer">
+            <img src={`/${project.imagePath}`} width={1200} height={600} alt="" loading="lazy" />
+            <div class="body">
+              <h2>{project.title} <span aria-hidden="true">↗</span></h2>
+              <p>{project.description}</p>
             </div>
           </a>
-        )
-      })}
+        ))}
+      </div>
     </>
   )
 })
+
+export const head: DocumentHead = {
+  title: 'Sam Slotsky | Projects',
+};
