@@ -19,12 +19,9 @@ const roles: Role[] = [
       "Building the Keycard Console, the management UI for identity and access for AI agents.",
     highlights: [
       "Made access policy approachable for every admin without limiting experts by building a best-in-class policy builder: a rich visual editor alongside a full-control Cedar editor with an IDE-like experience, without compromising performance.",
-      "Delivered a consistently beautiful and delightful experience across 3+ UI surfaces, each built with different tech and different performance requirements, by building and maintaining the design library that powers them all.",
+      "Made every surface, from the Console to the server-rendered sign-in and signup pages, feel like one consistently beautiful and delightful product, despite different tech and performance requirements, by building and maintaining the design library that powers them all.",
       "Kept every Console page fast as customer data grew by converting the entire management API to keyset pagination, almost single-handedly.",
-      "Made sign-in and signup feel like part of the product, and hardened them, by moving the login screens from server templates to Preact SSR on the shared design library with a strict per-request Content Security Policy.",
-      "Got new users from sign-up to a deployed, Keycard-secured agent in one sitting by building the Console's guided self-serve onboarding, which checks off each step from the user's real activity.",
-      "Gave admins visibility into and control over what agents do by building the Console's Activity views on the audit pipeline and per-tool enablement for MCP gateways.",
-      "Let enterprise customers manage access from their own identity provider by building SSO and directory sync settings in the Console.",
+      "Helped take Keycard from zero to one with self-serve onboarding that gets new users from sign-up to a deployed, Keycard-secured agent in one sitting, implementing most of its front-end progress signals, often by extending the APIs behind them first.",
     ],
   },
   {
