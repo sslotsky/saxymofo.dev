@@ -35,7 +35,7 @@ const roles: Role[] = [
     title: "Senior Software Engineer",
     dates: "Jun 2021 – Nov 2023",
     summary:
-      "Logistics engineering at Shopify, continuing at Flexport after it acquired Shopify Logistics.",
+      "Logistics engineering on the Shopify Fulfillment Network (SFN), continuing at Flexport after Shopify sold its fulfillment business to Flexport.",
     highlights: [
       "Designed and built systems to orchestrate and track inventory transfers within a fulfillment network.",
       "Built tools for support staff to correct data inconsistencies caused by operational errors with transfer inventory.",
