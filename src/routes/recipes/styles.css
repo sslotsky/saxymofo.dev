@@ -11,6 +11,8 @@
 .recipe-controls > strong { display: block; margin-bottom: .75rem; }
 .recipe-controls label { font-size: .85rem; }
 .recipe-controls input { width: 5rem; padding: .4rem; margin-left: .3rem; border: 1px solid var(--ink-line); border-radius: .4rem; background: var(--ink); color: var(--cream); font: inherit; }
+.recipe-buttons[aria-label="Recipe scale"] button { width: 3.5rem; padding-inline: 0; font-variant-numeric: tabular-nums; }
+.recipe-controls input, .recipe-yield { font-variant-numeric: tabular-nums; }
 .recipe-yield { margin: 1rem 0; }
 .recipe-panel h2 { margin-top: 1rem; }
 .recipe-panel h3 { font-size: 1.1rem; margin-top: 1.25rem; }
@@ -19,6 +21,9 @@
 .recipe-group:not(:has(> h3)) .recipe-ingredients { margin-top: 0; }
 .recipe-ingredients label { display: flex; align-items: baseline; gap: .7rem; padding: .3rem 0; cursor: pointer; }
 .recipe-ingredients input { accent-color: var(--brass); }
+.recipe-quantity { display: grid; min-width: 0; }
+.recipe-quantity > span { grid-area: 1 / 1; }
+.recipe-quantity-size { visibility: hidden; pointer-events: none; user-select: none; }
 .recipe-ingredients input:checked + span { text-decoration: line-through; color: var(--smoke); }
 .recipe-card h2 { margin-top: 0; }
 .recipe-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; }
@@ -32,6 +37,7 @@
 .recipe-card .recipe-meta { margin-bottom: 0; }
 .recipe-filters { margin: 2rem 0; }
 @media print {
+  .recipe-quantity-size { display: none; }
   nav, .recipe-controls, .recipe-back, .recipe-filters { display: none !important; }
   .recipe-panel, .recipe-card { background: white; border-color: #ccc; color: #111; }
   .recipe-description, .recipe-meta, .recipe-ingredients input:checked + span { color: #333; }

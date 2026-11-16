@@ -18,7 +18,8 @@ ingredient lines. `add` is a list of groups whose items append to same-named
 groups, or whose new groups append at the end. Processing order is remove,
 ingredients replacement, then add; removals only affect base ingredients.
 Variation names become lowercase, hyphenated URL slugs; keep those slugs unique
-and reserve `base` for the original recipe.
+and reserve `base` for the original recipe. Optional `baseVariationName` sets
+the original recipe's tab label (defaults to `Classic`).
 
 Write steps and notes as ordinary Markdown. Wrap inline text quantities in
 `<Q>50 g</Q>` to scale them along with the ingredient list and yield.
@@ -36,7 +37,10 @@ Common spelled-out units inflect with the scaled amount; abbreviations stay unch
 Set `scalable: false` to hide scaling and keep quantities at 1× (used by the
 weekly plan). The index pins plans first, then meals, bread, spreads, and sauces.
 
-Scale and variation are linkable with `?scale=2&v=with-herbs`. Invalid scales
+Scale and variation are linkable with `?scale=2&v=with-herbs`. Controls replace
+the current history entry without navigating or fetching the route again.
+Ingredient rows reserve room for all preset scales to avoid text-wrap jumps.
+Invalid scales
 fall back to 1 and unknown variations to base. The recipe index opts out of
 the recipe layout with `frontmatter.notARecipe`.
 
