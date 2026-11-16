@@ -12,11 +12,13 @@ import X from '~/components/svg/brand-x.svg?jsx';
 import Instagram from '~/components/svg/brand-instagram.svg?jsx';
 import LinkedIn from '~/components/svg/brand-linkedin.svg?jsx';
 import Envelope from '~/components/svg/envelope.svg?jsx';
+import Utensils from '~/components/svg/utensils.svg?jsx';
 
 const sections = [
   { href: '/', label: 'Home', Icon: Home },
   { href: '/projects/', label: 'Projects', Icon: Briefcase },
   { href: '/blog/', label: 'Blog', Icon: Writing },
+  { href: '/recipes/', label: 'Recipes', Icon: Utensils },
   { href: '/resume/', label: 'Resume', Icon: News },
 ];
 
