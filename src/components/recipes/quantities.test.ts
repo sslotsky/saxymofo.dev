@@ -41,6 +41,18 @@ test('package sizes stay fixed, while parentheticals after the ingredient scale'
   assert.equal(scaleQuantity('1 can chickpeas (15 oz)', 2), '2 cans chickpeas (30 oz)');
   assert.equal(scaleQuantity('375 g bread flour (about 3 cups)', 2), '750 g bread flour (about 6 cups)');
 });
+test('french toast oil, eggs and pinches scale cleanly at preset sizes', () => {
+  for (const [scale, oil, eggs, salt] of [
+    [.5, '1 1/3 tbsp avocado oil', '1 egg', '1/2 pinch kosher salt'],
+    [1, '2 2/3 tbsp avocado oil', '2 eggs', '1 pinch kosher salt'],
+    [2, '5 1/3 tbsp avocado oil', '4 eggs', '2 pinches kosher salt'],
+    [3, '8 tbsp avocado oil', '6 eggs', '3 pinches kosher salt'],
+  ] as const) {
+    assert.equal(scaleQuantity('2 2/3 tbsp avocado oil', scale), oil);
+    assert.equal(scaleQuantity('2 eggs', scale), eggs);
+    assert.equal(scaleQuantity('1 pinch kosher salt', scale), salt);
+  }
+});
 test('rounding, empty, malformed and invalid inputs', () => {
   assert.equal(scaleQuantity('1 cup', 1/3), '1/3 cup');
   assert.equal(scaleQuantity('10 g salt', 1/3), '3 g salt');
