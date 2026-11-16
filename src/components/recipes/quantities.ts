@@ -33,7 +33,7 @@ function format(n: number, unit: string): string {
   return [whole || '', nearest[1]].filter(Boolean).join(' ') || '0';
 }
 
-const units: Record<string, string> = { cup: 'cups', can: 'cans', loaf: 'loaves', clove: 'cloves', head: 'heads', slice: 'slices', jar: 'jars', pinch: 'pinches', handful: 'handfuls', pepper: 'peppers', batch: 'batches', serving: 'servings', portion: 'portions' };
+const units: Record<string, string> = { cup: 'cups', can: 'cans', loaf: 'loaves', clove: 'cloves', head: 'heads', slice: 'slices', jar: 'jars', pinch: 'pinches', handful: 'handfuls', pepper: 'peppers', batch: 'batches', serving: 'servings', portion: 'portions', egg: 'eggs' };
 
 function inflectUnit(text: string, plural: boolean): string {
   let found = false;
