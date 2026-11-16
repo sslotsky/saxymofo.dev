@@ -30,6 +30,9 @@ ranges (`2-3` or `2 to 3`). Lines without a leading quantity are not scaled.
 Metric weights/liquids use rounded decimals; other quantities use common fractions.
 No-space units such as `375g` work too. A parenthetical starting with a quantity
 or `about`/`approx.` and a quantity scales as well, including `+` combinations.
+Put package sizes between the count and unit (`1 (15 oz) can chickpeas`) to
+keep the package size fixed. Parentheticals after the ingredient still scale.
+Common spelled-out units inflect with the scaled amount; abbreviations stay unchanged.
 Set `scalable: false` to hide scaling and keep quantities at 1× (used by the
 weekly plan). The index pins plans first, then meals, bread, spreads, and sauces.
 

@@ -33,10 +33,30 @@ function format(n: number, unit: string): string {
   return [whole || '', nearest[1]].filter(Boolean).join(' ') || '0';
 }
 
+const units: Record<string, string> = { cup: 'cups', can: 'cans', loaf: 'loaves', clove: 'cloves', head: 'heads', slice: 'slices', jar: 'jars', pinch: 'pinches', handful: 'handfuls' };
+
+function inflectUnit(text: string, plural: boolean): string {
+  let found = false;
+  return text.replace(/\([^()]*\)|\b[a-z]+\b/gi, word => {
+    if (found || word.startsWith('(')) return word;
+    const lower = word.toLowerCase();
+    if (/^(g|kg|tbsp|tsp|oz|ml|l|grams?|kilograms?|milliliters?|liters?)$/.test(lower)) {
+      found = true;
+      return word;
+    }
+    const singular = Object.keys(units).find(unit => unit === lower || units[unit] === lower);
+    if (!singular) return word;
+    found = true;
+    const result = plural ? units[singular] : singular;
+    return word[0] === word[0].toUpperCase() ? result[0].toUpperCase() + result.slice(1) : result;
+  });
+}
+
 export function scaleQuantity(line: string, scale: number): string {
   const parsed = parseQuantity(line);
   if (!parsed || !Number.isFinite(scale) || scale <= 0) return line;
-  const rest = parsed.rest.replace(/\((about\s+|approx\.?\s+)?([^()]*)\)/g, (original, prefix: string | undefined, contents: string) =>
+  const packageSize = parsed.rest.match(/^\s*\([^()]*\)\s+(?=[a-z])/i)?.[0] ?? '';
+  const rest = packageSize + parsed.rest.slice(packageSize.length).replace(/\((about\s+|approx\.?\s+)?([^()]*)\)/g, (original, prefix: string | undefined, contents: string) =>
     parseQuantity(contents) ? `(${prefix ?? ''}${contents.split(/\s*\+\s*/).map(part => scaleQuantity(part, scale)).join(' + ')})` : original);
-  return parsed.amounts.map(n => format(n * scale, parsed.rest.trim())).join('–') + rest;
+  return parsed.amounts.map(n => format(n * scale, parsed.rest.trim())).join('–') + inflectUnit(rest, Math.max(...parsed.amounts) * scale > 1);
 }

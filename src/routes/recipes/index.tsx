@@ -20,11 +20,11 @@ export default component$(() => {
     <div class="recipe-buttons recipe-filters" role="group" aria-label="Filter recipes by tag">
       {['', ...tags].map(t => <button key={t} aria-pressed={tag.value === t} onClick$={() => tag.value = t}>{t || 'All recipes'}</button>)}
     </div>
-    {recipes.filter(recipe => !tag.value || recipe.tags?.includes(tag.value)).map(recipe => <section class="recipe-card" key={recipe.path}>
+    <div class="recipe-grid">{recipes.filter(recipe => !tag.value || recipe.tags?.includes(tag.value)).map(recipe => <section class="recipe-card" key={recipe.path}>
       <h2><a href={recipe.path}>{recipe.title}</a></h2>
       <p>{recipe.description}</p>
       <div class="recipe-meta">{recipe.tags?.map(t => <span class="recipe-tag" key={t}>{t}</span>)}</div>
-    </section>)}
+    </section>)}</div>
     {!recipes.length && <p>No recipes yet. Something good is on the way.</p>}
   </div>;
 });

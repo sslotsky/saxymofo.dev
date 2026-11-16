@@ -54,7 +54,7 @@ export default component$(() => {
         {recipe.value.variations.map(v => <button key={v.name} aria-pressed={variation.value === variationSlug(v.name)} onClick$={() => update(scale.value, variationSlug(v.name))}>{v.name}</button>)}
       </div>}
       {selected.value?.description && <p>{selected.value.description}</p>}
-      <h2>Ingredients</h2>
+      <h2>{recipe.value.scalable === false ? 'Shopping list' : 'Ingredients'}</h2>
       {groups.value.map((group, i) => <div class="recipe-group" key={`${variation.value}-${i}`}>
         {group.group && <h3>{group.group}</h3>}
         <ul class="recipe-ingredients">{group.items.map((item, j) => <li key={j}><label><input type="checkbox" /> <span>{scaleQuantity(item, scale.value)}</span></label></li>)}</ul>
@@ -64,7 +64,7 @@ export default component$(() => {
           await navigator.clipboard.writeText(groups.value.map(group => [group.group, ...group.items.map(item => scaleQuantity(item, scale.value))].filter(Boolean).join('\n')).join('\n\n'));
           copied.value = 'Ingredients copied';
         } catch { copied.value = 'Could not copy. Please select and copy the list manually.'; }
-      }}>Copy ingredients</button> <span role="status">{copied.value}</span></div>
+      }}>{recipe.value.scalable === false ? 'Copy shopping list' : 'Copy ingredients'}</button> <span role="status">{copied.value}</span></div>
     </section>
     <div class="recipe-body"><Slot /></div>
   </div>;
