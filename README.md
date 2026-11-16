@@ -1,5 +1,45 @@
 # Qwik City App ⚡️
 
+## Adding a recipe
+
+Create `src/routes/recipes/<slug>/index.mdx` by copying
+`docs/recipe-template.mdx`; keep `---` on the first line and replace the examples.
+The recipe automatically appears at `/recipes/` and in its tag filters.
+Merging to `main` deploys the site.
+
+Frontmatter includes `title`, `description`, `tags`, `yield` (a quantity line such
+as `2 cups`), optional display-only `time`, and `ingredients`: a list of groups
+with an optional `group` heading and an `items` list of ingredient strings.
+Optional `variations` have a unique `name`, optional plain-text `description`,
+and ingredient groups. A variation group replaces the entire base group with
+the same name (including unnamed groups); new names append. Use one group per name.
+Variation `remove` is a list of case-insensitive substrings to drop from base
+ingredient lines. `add` is a list of groups whose items append to same-named
+groups, or whose new groups append at the end. Processing order is remove,
+ingredients replacement, then add; removals only affect base ingredients.
+Variation names become lowercase, hyphenated URL slugs; keep those slugs unique
+and reserve `base` for the original recipe.
+
+Write steps and notes as ordinary Markdown. Wrap inline text quantities in
+`<Q>50 g</Q>` to scale them along with the ingredient list and yield.
+`<Variation name="With Herbs">...</Variation>` shows content only for that
+variation; `<Variation name="base">...</Variation>` is base-only content.
+Put blank lines around Markdown blocks inside a Variation. Quantities support
+integers, decimals, fractions, mixed numbers, common Unicode fractions, and
+ranges (`2-3` or `2 to 3`). Lines without a leading quantity are not scaled.
+Metric weights/liquids use rounded decimals; other quantities use common fractions.
+No-space units such as `375g` work too. A parenthetical starting with a quantity
+or `about`/`approx.` and a quantity scales as well, including `+` combinations.
+Set `scalable: false` to hide scaling and keep quantities at 1× (used by the
+weekly plan). The index pins plans first, then meals, bread, spreads, and sauces.
+
+Scale and variation are linkable with `?scale=2&v=with-herbs`. Invalid scales
+fall back to 1 and unknown variations to base. The recipe index opts out of
+the recipe layout with `frontmatter.notARecipe`.
+
+Run the dependency-free parser tests with `node --experimental-strip-types
+--test src/components/recipes/quantities.test.ts` (Node 22.6+).
+
 - [Qwik Docs](https://qwik.builder.io/)
 - [Discord](https://qwik.builder.io/chat)
 - [Qwik GitHub](https://github.com/BuilderIO/qwik)

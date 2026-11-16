@@ -1,0 +1,30 @@
+---
+# Copy this file to src/routes/recipes/<slug>/index.mdx and replace the examples.
+title: My Recipe
+description: A short blurb for the recipe index.
+tags: [dinner]
+yield: 4 servings
+time: 30 min
+# scalable: false # Hide scale controls for a fixed meal plan.
+ingredients:
+  - group: Main
+    items: [200 g rice, salt to taste]
+variations:
+  - name: With Herbs
+    description: Fresh and green.
+    remove: [salt]
+    add:
+      - group: Extras
+        items: [1/2 cup chopped herbs]
+  - name: With Quinoa
+    ingredients: # Same-named groups replace base groups entirely.
+      - group: Main
+        items: [200 g quinoa, salt to taste]
+---
+
+## Method
+
+Cook with <Q>400 ml</Q> water.
+
+<Variation name="base">Serve simply.</Variation>
+<Variation name="With Herbs">Fold in the herbs before serving.</Variation>
