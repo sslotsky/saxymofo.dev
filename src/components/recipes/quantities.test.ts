@@ -21,13 +21,15 @@ test('leading quantities and ranges scale', () => {
   ]) assert.equal(scaleQuantity(line, 2), expected);
 });
 test('units inflect in ingredients, yields and parentheticals without changing abbreviations', () => {
-  for (const [single, plural] of Object.entries({ cup: 'cups', can: 'cans', loaf: 'loaves', clove: 'cloves', head: 'heads', slice: 'slices', jar: 'jars', pinch: 'pinches', handful: 'handfuls', pepper: 'peppers' })) {
+  for (const [single, plural] of Object.entries({ cup: 'cups', can: 'cans', loaf: 'loaves', clove: 'cloves', head: 'heads', slice: 'slices', jar: 'jars', pinch: 'pinches', handful: 'handfuls', pepper: 'peppers', batch: 'batches', serving: 'servings', portion: 'portions' })) {
     assert.equal(scaleQuantity(`1 ${single}`, 2), `2 ${plural}`);
     assert.equal(scaleQuantity(`2 ${plural}`, .5), `1 ${single}`);
     assert.equal(scaleQuantity(`1 ${plural}`, .5), `1/2 ${single}`);
   }
   for (const unit of ['g', 'tbsp', 'tsp', 'oz', 'ml']) assert.equal(scaleQuantity(`1 ${unit}`, 2), `2 ${unit}`);
   assert.equal(scaleQuantity('1 small garlic clove', 2), '2 small garlic cloves');
+  assert.equal(scaleQuantity('1 batch coconut-cashew dinner sauce', 2), '2 batches coconut-cashew dinner sauce');
+  assert.equal(scaleQuantity('1 dinner portion', 2), '2 dinner portions');
   assert.equal(scaleQuantity('1 jarred roasted red pepper, patted completely dry', 2), '2 jarred roasted red peppers, patted completely dry');
   assert.equal(scaleQuantity('2 jarred roasted red peppers, patted completely dry', .5), '1 jarred roasted red pepper, patted completely dry');
   assert.equal(scaleQuantity('1 cup whole cloves', 2), '2 cups whole cloves');
