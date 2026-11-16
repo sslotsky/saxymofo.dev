@@ -10,6 +10,8 @@ Merging to `main` deploys the site.
 Frontmatter includes `title`, `description`, `tags`, `yield` (a quantity line such
 as `2 cups`), optional display-only `time`, and `ingredients`: a list of groups
 with an optional `group` heading and an `items` list of ingredient strings.
+Always use YAML block lists (`- item` on its own line) for `items` and `remove`.
+Commas inside flow sequences (`[...]`) split lines into separate ingredients.
 Optional `variations` have a unique `name`, optional plain-text `description`,
 and ingredient groups. A variation group replaces the entire base group with
 the same name (including unnamed groups); new names append. Use one group per name.
@@ -44,8 +46,9 @@ Invalid scales
 fall back to 1 and unknown variations to base. The recipe index opts out of
 the recipe layout with `frontmatter.notARecipe`.
 
-Run the dependency-free parser tests with `node --experimental-strip-types
---test src/components/recipes/quantities.test.ts` (Node 22.6+).
+Run `npm test` (Node 22.6+) for quantity, variation, and frontmatter tests.
+The frontmatter guard checks every recipe and the template for `items` or
+`remove` flow sequences, including empty and multiline ones.
 
 - [Qwik Docs](https://qwik.builder.io/)
 - [Discord](https://qwik.builder.io/chat)
