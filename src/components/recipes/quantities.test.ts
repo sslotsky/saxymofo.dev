@@ -53,6 +53,16 @@ test('french toast oil, eggs and pinches scale cleanly at preset sizes', () => {
     assert.equal(scaleQuantity('1 pinch kosher salt', scale), salt);
   }
 });
+test('cashew recipe ranges, counted nouns and pound abbreviations scale', () => {
+  assert.equal(scaleQuantity('1/2–3/4 cup water', 2), '1–1 1/2 cups water');
+  assert.equal(scaleQuantity('1 lb raw whole cashews (about 3 cups)', 2), '2 lb raw whole cashews (about 6 cups)');
+  assert.equal(scaleQuantity('1 lb (about 3 cups) raw whole cashews', 2), '2 lb (about 6 cups) raw whole cashews');
+  assert.equal(scaleQuantity('1 lb raw whole cashews (about 3 cups)', .5), '1/2 lb raw whole cashews (about 1 1/2 cups)');
+  assert.equal(scaleQuantity('1 roasted garlic clove', 2), '2 roasted garlic cloves');
+  assert.equal(scaleQuantity('1 small pinch fine sea salt', 2), '2 small pinches fine sea salt');
+  assert.equal(scaleQuantity('1 pinch ground turmeric', 2), '2 pinches ground turmeric');
+  assert.equal(scaleQuantity('1 lb', 2), '2 lb');
+});
 test('rounding, empty, malformed and invalid inputs', () => {
   assert.equal(scaleQuantity('1 cup', 1/3), '1/3 cup');
   assert.equal(scaleQuantity('10 g salt', 1/3), '3 g salt');
