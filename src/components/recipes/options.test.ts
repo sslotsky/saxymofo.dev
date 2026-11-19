@@ -1,7 +1,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 // @ts-ignore Node's native TypeScript runner needs the source extension.
-import { activeOption, isActive, optionErrors, optionSlug, recipeOptionErrors, recipeSearch } from './options.ts';
+import { activeOption, isActive, optionErrors, optionKey, optionSlug, recipeOptionErrors, recipeSearch } from './options.ts';
 // @ts-ignore Node's native TypeScript runner needs the source extension.
 import { scaleQuantity } from './quantities.ts';
 
@@ -44,9 +44,17 @@ test('option schema rejects reserved, duplicate, empty and non-string fields', (
   assert.deepEqual(optionErrors('schedules', [{ name: 'Base' }, { name: 'Over Night' }, { name: 'over-night' }, { name: '%%' }, 'x', { name: 'B', time: 2 }], ['time']), [
     'schedules[0].name "Base" is reserved for the base option',
     'schedules[2].name "over-night" duplicates slug "over-night"',
-    'schedules[3].name must be a non-empty string',
+    'schedules[3] needs a slug when its name has no Latin letters or digits',
     'schedules[4] must be an object',
     'schedules[5].time must be a string',
   ]);
   assert.deepEqual(recipeOptionErrors({ baseScheduleName: 1, variationLabel: ['Hydration'], variations: [{ name: 'A', description: 2 }] }), ['baseScheduleName must be a string', 'variationLabel must be a string', 'variations[0].description must be a string']);
+});
+
+test('translated options keep their English slug', () => {
+  const options = [{ name: 'Ночная расстойка в форме', slug: 'overnight-pan-proof' }];
+  assert.equal(optionKey(options[0]), 'overnight-pan-proof');
+  assert.equal(activeOption(options, 'overnight-pan-proof'), 'overnight-pan-proof');
+  assert.deepEqual(optionErrors('schedules', options, []), []);
+  assert.deepEqual(optionErrors('schedules', [{ name: 'Ночная', slug: '' }], []), ['schedules[0].slug must be a non-empty string']);
 });
