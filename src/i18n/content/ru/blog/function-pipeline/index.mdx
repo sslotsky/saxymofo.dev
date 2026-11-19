@@ -1,0 +1,271 @@
+---
+title: Конвейеры функций в TypeScript
+description:
+  В этом посте я покажу, как с помощью дженериков TypeScript
+  описать конвейер функций, где результат каждой функции
+  становится входом для следующей. Чтобы не уходить в
+  абстракции, мы соберём на этом конвейере пиццу.
+tags:
+  - TypeScript
+author: Сэм Слотски
+date: 2023-08-31
+og:
+  - image: /pizza-kitchen.png
+---
+
+В программировании это случается постоянно: есть многошаговый
+процесс, разбитый на множество мини-процессов. Каждый из них
+работает с одним и тем же входным объектом, а некоторые
+как-то его дополняют. Хорошо известный пример — цепочки
+middleware, но в этом посте давайте поговорим о том, что
+понятно большему числу людей. Конечно же, о пицце! 🍕
+
+На кухне пиццерии сырая основа отправляется по линии, где
+постепенно получает соус, сыр и начинку. Эти изменения нужно
+применить в определённом порядке, прежде чем пицца попадёт в
+печь! Если пицце нужен соус, её нельзя отправить на станцию
+с сыром, пока соус не добавлен. Как смоделировать такое в
+программе? В этом посте я воспользуюсь системой типов
+TypeScript, чтобы описать и связать последовательные
+мини-процессы, где ограничения задаются и соблюдаются через
+входы и выходы наших функций.
+
+## Пример использования API
+
+Каждая пиццерия сама решает, в каком порядке всё делать.
+Если пицца приходит на станцию без того, что уже должно было
+быть добавлено, это серьёзная проблема. Мы _могли бы_
+описать `sauce`, `cheese` и разные начинки как необязательные
+поля объекта пиццы, но если бы я проектировал API для сборки
+такой пиццы, я бы предпочёл, чтобы эти ограничения отражались
+в определениях типов, а не чтобы каждый мини-процесс работал
+с общим объектом пиццы с кучей необязательных полей. Может
+быть, как-то так?
+
+```ts
+const pizzaBuilder = pizzaBuilder(makeRawCrust(order));
+
+pizzaBuilder
+  .add((crust: RawCrust) => {
+    return addSauce(order, crust);
+  })
+  .add((sauced: CrustWithSauce) => {
+    return addCheese(order, sauced);
+  })
+  .add((cheesed: CrustWithSauceAndCheese) => {
+    return addToppings(order, cheesed);
+  })
+  .cook();
+```
+
+Здесь мы передаём `RawCrust` в `pizzaBuilder`, а затем
+добавляем мини-процессы по одному. Каждый вызов `add`
+принимает функцию-обработчик, но важно отметить, что это не
+может быть _любая_ функция! Вот ограничения типов:
+
+1. Вход первого обработчика должен быть того же типа, что
+   был передан в builder (в данном случае `RawCrust`)
+1. Вход любого другого обработчика должен быть того же типа,
+   что и выход предыдущего обработчика
+1. Функция `cook()` возвращает готовый продукт
+
+## Реализация
+
+Нужно решить две задачи:
+
+1. Реализовать ограничения API с помощью типов TypeScript
+1. Выполнить обработчики
+
+Первая гораздо интереснее, поэтому с неё и начнём. Будем
+также считать, что то, что мы строим, пригодится не только
+для приготовления отличной пиццы, поэтому сделаем имена и
+начальные входные данные чуть более общими.
+
+### Соблюдаем цепочку типов
+
+Для начала опишем генератор рабочего процесса, которому
+нужны начальные входные данные. Также введём понятие
+функции-обработчика с обобщёнными входом и выходом.
+
+```ts
+type Processor<Input, Output> = (input: Input) => Output;
+function workflow<InitialInput>(input: InitialInput) {}
+```
+
+Теперь обобщим задачу связывания функций в цепочку. В
+TypeScript нельзя объявить последовательность функций, где
+выход `F[n]` имеет тот же тип, что и вход `F[n + 1]`. Поэтому
+вместо этого мы введём три обобщённых типа: `Input`, `Output`
+и `NextInput`. Они позволят описать функцию, которая
+динамически достраивает себя при каждом использовании.
+
+```ts
+function process<Input, Output>(
+  processor: Processor<Input, Output>
+) {
+  function next<NextInput>(
+    nextProcessor: Processor<Output, NextInput>
+  ) {
+    return process(nextProcessor);
+  }
+
+  return next;
+}
+```
+
+Обратите внимание: обработчики пока не выполняются. Мы
+только можем связать их определения в цепочку, вот так:
+
+```ts
+process((initialInput: {}): { thing: number } => {
+  return { thing: 42 };
+})((input): { stringyThing: string } => {
+  return { stringyThing: input.thing.toString() };
+});
+```
+
+В этом примере два процесса изменяют то, что изначально было
+пустым объектом. Мы уже почти получили нужный API — осталось
+сделать его больше похожим на пример с пиццей и убедиться,
+что тип входа первого обработчика совпадает с нашими
+начальными данными.
+
+```ts
+function workflow<InitialInput>(input: InitialInput) {
+  function process<Input, Output>(
+    processor: Processor<Input, Output>
+  ) {
+    function next<NextInput>(
+      nextProcessor: Processor<Output, NextInput>
+    ) {
+      return process(nextProcessor);
+    }
+
+    return { process: next };
+  }
+
+  function first<Output>(
+    processor: Processor<InitialInput, Output>
+  ) {
+    return process(processor);
+  }
+
+  return { process: first };
+}
+
+workflow({})
+  .process((input) => {
+    return { ...input, thing: 42 };
+  })
+  .process((input) => {
+    return {
+      ...input,
+      stringyThing: `the meaning of life is ${input.thing}`,
+    };
+  })
+  .process((input) => {
+    return {
+      ...input,
+      againButLouder: input.stringyThing.toUpperCase(),
+    };
+  });
+```
+
+Цепочка типов готова. Осталось добавить способ выполнить эти
+обработчики по порядку.
+
+### Выполняем цепочку
+
+Снова обобщим задачу. У нас есть последовательность функций,
+где выход `F[n - 1]` становится входом `F[n]`. Значит, для
+любой функции в последовательности все предыдущие функции
+можно считать одной функцией. Другими словами, если у шага
+есть обработчик, его шаг сборки может выглядеть так:
+
+```ts {2,6}
+function step<Input, Output>(
+  buildPrevious: () => Input,
+  processor: Processor<Input, Output>
+) {
+  function build(): Output {
+    return processor(buildPrevious());
+  }
+
+  return { build };
+}
+```
+
+В примере выше `buildPrevious()` выполняет все предыдущие
+обработчики. Если перенести цепочку типов, которую мы видели
+раньше, в абстракцию `step`, решение начинает обретать форму:
+
+```ts
+function step<Input, Output>(
+  buildPrevious: () => Input,
+  processor: Processor<Input, Output>
+) {
+  function build(): Output {
+    return processor(buildPrevious());
+  }
+
+  function process<NextOutput>(
+    nextProcessor: Processor<Output, NextOutput>
+  ) {
+    return step(build, nextProcessor);
+  }
+
+  return { build, process };
+}
+```
+
+Теперь, если у меня есть `step`, я могу вызвать
+`step.process(someProcessor)`, чтобы получить следующий шаг
+цепочки, а `step.build()` становится функцией
+`buildPrevious()` для `nextStep`. У нас получилась
+рекурсивно выполняемая цепочка обработчиков, которой нужно
+только начальное зерно: 🌱
+
+```ts
+function workflow<InitialInput>(input: InitialInput) {
+  function process<FirstOutput>(
+    processor: Processor<InitialInput, FirstOutput>
+  ) {
+    return step(() => input, processor);
+  }
+
+  return { process };
+}
+```
+
+Рабочий пример можно попробовать в
+[TypeScript Playground](https://www.typescriptlang.org/play?#code/C4TwDgpgBACgTgewMYQM6oXAPASQHZgCuwANFAPLFHAB8UAvFABQCWBxAXFPtQJQN1KwagG4AUGIBmhPEmAsEeKKmAQwudqQpViNJmKhQARoRYAbACbwIANwWFUXJv3p0exEgahhEKdJi54ZDQMbHctIWoaMX4Aby9pWXlFY1NLZy5I4ih4w0M4CGBCOCUfYP84JhNzKwK7BAdnXnFDAF8JQ0S5BVLfEKwAOQgAD2As2iY8EeAgv1DAvoqscbIh0fGaOK98wuKlFTUqtIsyKdHZkMxmr3avAqKSnNSasjK5qFbxW67kpQB3TAAa0kZgQfw0LHkAEMzOE9GxqFx8JCWDDwltOjJuik3v0AGIsOAqDb6PLeRbzWAUzAQ6GwzRkAlEsY6WheDF5e57ZSqMBMZwCKAIjzk8qha5tDpQLmPWKi96fMS3JCKFRQBrCbKMAFwYGgv5MWKtXheAB0uPQ-OFwBcdFynN2sqgppd1rIwAAFmwAOZcAAsACYPi0PibDOaKVbNLacttpY6lHKXaa3Ty4D6QAAVL14X1QAAGnugAFsIFC8D71ZIoGYWJJoCxUFAACSxa2mz0+1r54M3MPOi2oKN8QX2nYPRPO10MqBQ71QtgAIWIABkGhYIHAuO2VOnc1mc96OwgAKpgSBwADCUNQEAFira-dN1XS1zEKrwGDMEFNoO9TA1PgRCAA)
+🚀 Советую поиграть с типами на входе и выходе ваших
+функций-обработчиков, представляя себе реалистичные,
+надуманные или совершенно нелепые сценарии, к которым это
+можно применить.
+
+## Заключение
+
+В этом посте на упрощённом примере было показано, как с
+помощью TypeScript построить строго типизированный конвейер
+функций, где выход каждой функции становится входом
+следующей. Наверняка есть десяток способов сделать его
+практичнее, в том числе поддержать асинхронные функции и
+повысить надёжность за счёт возобновления работы или другого
+восстановления после ошибок. Стоит также отметить, что такой
+конвейер требует, чтобы все обработчики работали с одним
+входом, и это сложно обойти, ведь функция может вернуть
+только одно значение.
+
+И, конечно, мы вряд ли когда-нибудь будем собирать этим
+вкусную пиццу. Но я думаю, что подобная схема может стать
+удобным API для цепочек middleware или других популярных
+абстракций, таких как обработчики рабочих процессов и
+пошаговые функции. В [библиотеке валидации zod](https://zod.dev/)
+есть похожие возможности в API цепочек валидации, где выход
+колбэка валидации становится типом результата функции
+валидации. Неудивительно, что она тоже вдохновила этот пост.
+
+Надеюсь, этот приём пригодится вам для какой-нибудь задачи
+или вы узнали новый трюк с дженериками TypeScript. В любом
+случае спасибо, что дочитали!
