@@ -72,3 +72,26 @@ test('rounding, empty, malformed and invalid inputs', () => {
   }
   for (const scale of [0, -1, NaN, Infinity]) assert.equal(scaleQuantity('1 cup', scale), '1 cup');
 });
+
+test('russian quantities use plural forms and decimal commas', () => {
+  for (const [line, scale, expected] of [
+    ['1 стакан муки', 2, '2 стакана муки'], ['1 стакан муки', 5, '5 стаканов муки'], ['1 стакан муки', .5, '1/2 стакана муки'],
+    ['2 зубчика чеснока', .5, '1 зубчик чеснока'], ['1 зубчик чеснока', 21, '21 зубчик чеснока'], ['1 зубчик чеснока', 11, '11 зубчиков чеснока'],
+    ['2 яйца', 3, '6 яиц'], ['1 щепотка соли', 3, '3 щепотки соли'], ['0,75 кг риса', 2, '1,5 кг риса'], ['1,5 л воды', 1, '1,5 л воды'],
+    ['375 г муки (около 3 стаканов)', 2, '750 г муки (около 6 стаканов)'], ['2–3 ст. л. сока', 2, '4–6 ст. л. сока'],
+    ['1 (425 г) банка нута', 2, '2 (425 г) банки нута'], ['Щепотка соли', 2, 'Щепотка соли'],
+  ] as const) assert.equal(scaleQuantity(line, scale, 'ru'), expected);
+});
+
+test('ukrainian quantities use plural forms and decimal commas', () => {
+  for (const [line, scale, expected] of [
+    ['1 склянка борошна', 2, '2 склянки борошна'], ['1 склянка борошна', 5, '5 склянок борошна'], ['1 склянка борошна', 1.5, '1 1/2 склянки борошна'],
+    ['1 зубчик часнику', 2, '2 зубчики часнику'], ['1 зубчик часнику', 5, '5 зубчиків часнику'], ['1 зубчик часнику', .5, '1/2 зубчика часнику'],
+    ['2 яйця', 3, '6 яєць'], ['1 яйце', 22, '22 яйця'], ['0,25 кг рису', 3, '0,75 кг рису'], ['250 г води (приблизно 1 склянка)', 2, '500 г води (приблизно 2 склянки)'],
+  ] as const) assert.equal(scaleQuantity(line, scale, 'uk'), expected);
+});
+
+test('english parsing ignores cyrillic-only syntax', () => {
+  assert.equal(scaleQuantity('1,5 cups', 2), '1,5 cups');
+  assert.deepEqual(parseQuantity('1,5 стакана', 'ru')?.amounts, [1.5]);
+});

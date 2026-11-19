@@ -1,5 +1,6 @@
 @import "@fontsource-variable/fraunces/opsz.css";
 @import "@fontsource-variable/inter/index.css";
+@import "@fontsource-variable/literata/opsz.css";
 
 :root {
   --ink: #121317;
@@ -10,7 +11,7 @@
   --brass: #d6ac57;
   --brass-bright: #f0c96f;
   --plum: #c47aa8;
-  --font-display: "Fraunces Variable", Georgia, serif;
+  --font-display: "Fraunces Variable", "Literata Variable", Georgia, serif;
   --font-body: "Inter Variable", system-ui, -apple-system, "Segoe UI",
     sans-serif;
   --measure: 42rem;

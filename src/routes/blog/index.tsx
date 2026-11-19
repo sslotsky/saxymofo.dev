@@ -2,10 +2,14 @@ import type { JSXChildren } from "@builder.io/qwik";
 import { component$, useStyles$ } from "@builder.io/qwik";
 import type { DocumentHead } from "@builder.io/qwik-city";
 import styles from './styles.css?inline';
+import { useLocation } from "@builder.io/qwik-city";
+import { langOf, localHref, locales } from "~/i18n";
+import { translation } from "~/i18n/content";
+import { t } from "~/i18n/messages";
 
-export const head: DocumentHead = () => {
+export const head: DocumentHead = ({ url }) => {
   return {
-    title: "Sam Slotsky's Developer Blog",
+    title: t(langOf(url), 'blog.title'),
     frontmatter: {
       notABlog: true,
     },
@@ -41,26 +45,28 @@ export async function sortPosts(imports: Record<string, () => Promise<PostModule
 export default component$(() => {
   useStyles$(styles);
   const posts = import.meta.glob<PostModule>('./**/*.mdx');
+  const lang = langOf(useLocation().url);
 
   const sorted = sortPosts(posts);
   return (
     <>
       <div class="blog-intro">
-        <h1>Blog</h1>
-        <p>Notes on TypeScript, functional programming and whatever else I'm tinkering with.</p>
+        <h1>{t(lang, 'blog.heading')}</h1>
+        <p>{t(lang, 'blog.intro')}</p>
       </div>
       {sorted.then((sortedPosts) => {
-        return sortedPosts.map(({ filename, post }, i) => {
+        return sortedPosts.map(({ filename, post: english }, i) => {
           const parts = filename.split("/");
           const path = parts.slice(1, parts.length - 1).join('/');
+          const post = (translation(lang, `/blog/${path}/`) ?? english) as PostModule;
           return (
             <div key={i} class="blog-preview">
               {post.frontmatter.date && (
                 <time>
-                  {new Date(post.frontmatter.date).toLocaleDateString('en-us', { year: "numeric", month: "long", day: "numeric", timeZone: "UTC" })}
+                  {new Date(post.frontmatter.date).toLocaleDateString(locales[lang], { year: "numeric", month: "long", day: "numeric", timeZone: "UTC" })}
                 </time>
               )}
-              <h2><a href={`/blog/${path}`}>{post.frontmatter.title}</a></h2>
+              <h2><a href={localHref(`/blog/${path}/`, lang)}>{post.frontmatter.title}</a></h2>
               {post.frontmatter.description ? (
                 <p>{post.frontmatter.description}</p>
               ) : (
