@@ -19,4 +19,4 @@ jobs:
           name: saxymofo-dot-dev-pr-${{ github.event.number }}
           region: ord
         env:
-          FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
+          FLY_API_TOKEN: ${{ secrets.FLY_REVIEW_APPS_TOKEN }}
