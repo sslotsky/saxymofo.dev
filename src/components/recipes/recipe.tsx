@@ -3,12 +3,13 @@ import type { Signal } from '@builder.io/qwik';
 import { useLocation } from '@builder.io/qwik-city';
 import { langOf } from '~/i18n';
 import { scaleQuantity } from './quantities';
-import { isActive, optionSlug } from './options';
+import { isActive, optionKey, optionSlug } from './options';
 export { mergeIngredients } from './ingredients';
 export type { Recipe } from './ingredients';
 
 export const recipeContext = createContextId<{ scale: Signal<number>; variation: Signal<string>; schedule: Signal<string> }>('recipe');
 export const variationSlug = optionSlug;
+export { optionKey };
 const InlineQuantity = component$((props: { text: string }) => {
   const state = useContext(recipeContext);
   const lang = langOf(useLocation().url);

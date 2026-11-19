@@ -1,6 +1,6 @@
 import { $, component$, Slot, useComputed$, useContextProvider, useSignal, useStyles$, useTask$ } from '@builder.io/qwik';
 import { useLocation } from '@builder.io/qwik-city';
-import { mergeIngredients, recipeContext, variationSlug } from '~/components/recipes/recipe';
+import { mergeIngredients, optionKey, recipeContext } from '~/components/recipes/recipe';
 import { activeOption, BASE, recipeSearch } from '~/components/recipes/options';
 import type { Recipe } from '~/components/recipes/recipe';
 import { scaleQuantity } from '~/components/recipes/quantities';
@@ -37,8 +37,8 @@ export default component$(() => {
     window.history.replaceState(window.history.state, '', url);
     search.value = url.search;
   });
-  const selected = useComputed$(() => recipe.value.variations?.find(v => variationSlug(v.name) === variation.value));
-  const selectedSchedule = useComputed$(() => recipe.value.schedules?.find(s => variationSlug(s.name) === schedule.value));
+  const selected = useComputed$(() => recipe.value.variations?.find(v => optionKey(v) === variation.value));
+  const selectedSchedule = useComputed$(() => recipe.value.schedules?.find(s => optionKey(s) === schedule.value));
   const time = useComputed$(() => selectedSchedule.value?.time ?? recipe.value.time);
   const groups = useComputed$(() => mergeIngredients(recipe.value.ingredients, selected.value));
   if (head.frontmatter.notARecipe) return <Slot />;
@@ -63,7 +63,7 @@ export default component$(() => {
         <strong>{recipe.value.variationLabel ?? t(lang, 'recipes.variation')}</strong>
         <div class="recipe-buttons" role="group" aria-label={recipe.value.variationLabel ?? t(lang, 'recipes.variation')}>
           <button aria-pressed={variation.value === BASE} onClick$={() => update({ variation: BASE })}>{recipe.value.baseVariationName ?? t(lang, 'recipes.classic')}</button>
-          {recipe.value.variations.map(v => <button key={v.name} aria-pressed={variation.value === variationSlug(v.name)} onClick$={() => update({ variation: variationSlug(v.name) })}>{v.name}</button>)}
+          {recipe.value.variations.map(v => <button key={v.name} aria-pressed={variation.value === optionKey(v)} onClick$={() => update({ variation: optionKey(v) })}>{v.name}</button>)}
         </div>
       </div>}
       {selected.value?.description && <p>{selected.value.description}</p>}
@@ -71,7 +71,7 @@ export default component$(() => {
         <strong>{recipe.value.scheduleLabel ?? t(lang, 'recipes.schedule')}</strong>
         <div class="recipe-buttons" role="group" aria-label={recipe.value.scheduleLabel ?? t(lang, 'recipes.schedule')}>
           <button aria-pressed={schedule.value === BASE} onClick$={() => update({ schedule: BASE })}>{recipe.value.baseScheduleName ?? t(lang, 'recipes.standard')}</button>
-          {recipe.value.schedules.map(s => <button key={s.name} aria-pressed={schedule.value === variationSlug(s.name)} onClick$={() => update({ schedule: variationSlug(s.name) })}>{s.name}</button>)}
+          {recipe.value.schedules.map(s => <button key={s.name} aria-pressed={schedule.value === optionKey(s)} onClick$={() => update({ schedule: optionKey(s) })}>{s.name}</button>)}
         </div>
       </div>}
       {(selectedSchedule.value?.description || selectedSchedule.value?.time) && <p>
