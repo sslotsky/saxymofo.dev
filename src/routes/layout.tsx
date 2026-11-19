@@ -1,5 +1,5 @@
 import { component$, Slot, useSignal, useStyles$, useTask$ } from "@builder.io/qwik";
-import { routeLoader$, useContent, useDocumentHead, useLocation } from "@builder.io/qwik-city";
+import { routeLoader$, useContent, useLocation } from "@builder.io/qwik-city";
 import type { ContentHeading, RequestHandler } from "@builder.io/qwik-city";
 import styles from './styles.css?inline';
 import Logo from '~/components/samo-badge.svg?jsx';
@@ -13,13 +13,19 @@ import Instagram from '~/components/svg/brand-instagram.svg?jsx';
 import LinkedIn from '~/components/svg/brand-linkedin.svg?jsx';
 import Envelope from '~/components/svg/envelope.svg?jsx';
 import Utensils from '~/components/svg/utensils.svg?jsx';
+import { languageHref, languageNames, languages, langOf, localHref } from '~/i18n';
+import type { Lang } from '~/i18n';
+import { isUntranslated, nestedContent, translation } from '~/i18n/content';
+import { t } from '~/i18n/messages';
+import type { MessageKey } from '~/i18n/messages';
+import { PageContent, useLocalizedHead } from '~/i18n/page';
 
-const sections = [
-  { href: '/', label: 'Home', Icon: Home },
-  { href: '/projects/', label: 'Projects', Icon: Briefcase },
-  { href: '/blog/', label: 'Blog', Icon: Writing },
-  { href: '/recipes/', label: 'Recipes', Icon: Utensils },
-  { href: '/resume/', label: 'Resume', Icon: News },
+const sections: { href: string; label: MessageKey; Icon: typeof Home }[] = [
+  { href: '/', label: 'nav.home', Icon: Home },
+  { href: '/projects/', label: 'nav.projects', Icon: Briefcase },
+  { href: '/blog/', label: 'nav.blog', Icon: Writing },
+  { href: '/recipes/', label: 'nav.recipes', Icon: Utensils },
+  { href: '/resume/', label: 'nav.resume', Icon: News },
 ];
 
 const elsewhere = [
@@ -33,26 +39,29 @@ const elsewhere = [
 const isCurrent = (pathname: string, href: string) =>
   href === '/' ? pathname === '/' : pathname.startsWith(href);
 
-export function SiteNav(props: { pathname: string }) {
+export function SiteNav(props: { pathname: string; lang: Lang }) {
   return (
-    <nav class="site-nav" aria-label="Site">
+    <nav class="site-nav" aria-label={t(props.lang, 'nav.site')}>
       {sections.map(({ href, label, Icon }) => (
-        <a key={href} href={href} aria-current={isCurrent(props.pathname, href) ? 'page' : undefined}>
-          <Icon /> {label}
+        <a key={href} href={localHref(href, props.lang)} aria-current={isCurrent(props.pathname, href) ? 'page' : undefined}>
+          <Icon /> {t(props.lang, label)}
         </a>
       ))}
     </nav>
   );
 }
 
-export function Socials() {
+export function Socials(props: { lang: Lang }) {
   return (
-    <nav class="socials" aria-label="Elsewhere">
-      {elsewhere.map(({ href, label, Icon }) => (
-        <a key={href} href={href} target="_blank" rel="noreferrer" aria-label={label} title={label}>
-          <Icon />
-        </a>
-      ))}
+    <nav class="socials" aria-label={t(props.lang, 'nav.elsewhere')}>
+      {elsewhere.map(({ href, label, Icon }) => {
+        const name = label === 'Email' ? t(props.lang, 'social.email') : label;
+        return (
+          <a key={href} href={href} target="_blank" rel="noreferrer" aria-label={name} title={name}>
+            <Icon />
+          </a>
+        );
+      })}
     </nav>
   );
 }
@@ -128,6 +137,24 @@ export const onGet: RequestHandler = async ({ cacheControl }) => {
   });
 };
 
+export function LanguageReview(props: { url: URL; lang: Lang }) {
+  return (
+    <aside class="lang-review" aria-label={t(props.lang, 'review.languages')}>
+      <p>
+        {t(props.lang, 'review.notice')}
+        {isUntranslated(props.lang, props.url.pathname) && <> {t(props.lang, 'review.untranslated')}</>}
+      </p>
+      <nav aria-label={t(props.lang, 'review.languages')}>
+        {languages.map(lang => (
+          <a key={lang} href={languageHref(props.url, lang)} hreflang={lang} lang={lang} aria-current={lang === props.lang ? 'true' : undefined}>
+            {languageNames[lang]}
+          </a>
+        ))}
+      </nav>
+    </aside>
+  );
+}
+
 export const useServerTimeLoader = routeLoader$(() => {
   return {
     date: new Date().toISOString(),
@@ -140,48 +167,52 @@ export default component$(() => {
   useStyles$(styles);
   const structuredHeadings = useSignal<Array<StructuredHeading>>([]);
   const content = useContent();
-  const { frontmatter } = useDocumentHead();
+  const { frontmatter } = useLocalizedHead();
   const loc = useLocation();
+  const lang = langOf(loc.url);
   useTask$(({ track }) => {
-    track(() => content.headings);
+    const url = track(() => loc.url);
+    const headings = translation(langOf(url), url.pathname)?.headings ?? track(() => content.headings);
 
-    structuredHeadings.value = structure(content.headings || []);
+    structuredHeadings.value = structure(headings || []);
   });
 
   const pathname = loc.url.pathname;
-  const showToc = Boolean(frontmatter.date) && (content.headings?.length ?? 0) > 1;
+  const headings = translation(lang, pathname)?.headings ?? content.headings;
+  const showToc = Boolean(frontmatter.date) && (headings?.length ?? 0) > 1;
   const layout = wideRoutes.includes(pathname) ? 'wide' : showToc ? 'with-toc' : '';
 
   return (
-    <div class="site-container">
+    <div class="site-container" lang={lang === 'en' ? undefined : lang}>
+      {lang !== 'en' && <LanguageReview url={loc.url} lang={lang} />}
       <header class="site-header">
         <div class="inner">
-          <a class="brand" href="/">
+          <a class="brand" href={localHref('/', lang)}>
             <Logo class="site-logo" aria-hidden="true" />
             <span>
-              <strong>Sam Slotsky</strong>
-              <small>Saxophonist. Code slinger.</small>
+              <strong>{t(lang, 'brand.name')}</strong>
+              <small>{t(lang, 'brand.tagline')}</small>
             </span>
           </a>
-          <SiteNav pathname={pathname} />
-          <Socials />
+          <SiteNav pathname={pathname} lang={lang} />
+          <Socials lang={lang} />
         </div>
       </header>
       <main class={layout}>
         <article>
-          <Slot />
+          {nestedContent(pathname) ? <Slot /> : <PageContent><Slot /></PageContent>}
         </article>
         {showToc && (
-          <nav class="toc" aria-label="On this page">
-            <strong>On this page</strong>
+          <nav class="toc" aria-label={t(lang, 'toc.heading')}>
+            <strong>{t(lang, 'toc.heading')}</strong>
             <RenderStructuredList list={structuredHeadings.value} />
           </nav>
         )}
       </main>
       <footer class="site-footer">
         <div class="inner">
-          <span>© {new Date().getFullYear()} Sam Slotsky · Minneapolis, MN</span>
-          <Socials />
+          <span>© {new Date().getFullYear()} {t(lang, 'brand.name')} · {t(lang, 'footer.location')}</span>
+          <Socials lang={lang} />
         </div>
       </footer>
     </div>

@@ -1,4 +1,6 @@
-import { useDocumentHead, useLocation } from "@builder.io/qwik-city";
+import { useLocation } from "@builder.io/qwik-city";
+import { languageHref, langOf } from "~/i18n";
+import { useLocalizedHead } from "~/i18n/page";
 
 import { component$ } from "@builder.io/qwik";
 
@@ -6,14 +8,16 @@ import { component$ } from "@builder.io/qwik";
  * The RouterHead component is placed inside of the document `<head>` element.
  */
 export const RouterHead = component$(() => {
-  const head = useDocumentHead();
+  const head = useLocalizedHead();
   const loc = useLocation();
+  const lang = langOf(loc.url);
 
   return (
     <>
       <title>{head.title}</title>
 
-      <link rel="canonical" href={loc.url.href} />
+      <link rel="canonical" href={new URL(languageHref(loc.url, 'en'), loc.url.origin).href} />
+      {lang !== 'en' && <meta name="robots" content="noindex" />}
       <meta name="viewport" content="width=device-width, initial-scale=1.0" />
       <link rel="icon" type="image/svg+xml" href="/logo.svg" />
       <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.27.0/themes/prism-dark.min.css" />

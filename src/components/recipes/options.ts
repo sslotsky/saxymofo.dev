@@ -2,8 +2,10 @@ export const BASE = 'base';
 
 export const optionSlug = (name: string) => name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
 
-export function activeOption(options: { name: string }[] | undefined, selected: string | null) {
-  return selected && options?.some(option => optionSlug(option.name) === selected) ? selected : BASE;
+export const optionKey = (option: { name: string; slug?: string }) => optionSlug(option.slug ?? option.name);
+
+export function activeOption(options: { name: string; slug?: string }[] | undefined, selected: string | null) {
+  return selected && options?.some(option => optionKey(option) === selected) ? selected : BASE;
 }
 
 export const isActive = (active: string, name: string) => active === optionSlug(name);
@@ -25,8 +27,10 @@ export function optionErrors(field: string, options: unknown, stringFields: stri
     const label = `${field}[${index}]`;
     if (typeof option !== 'object' || option === null) return [`${label} must be an object`];
     const record = option as Record<string, unknown>;
-    if (typeof record.name !== 'string' || !optionSlug(record.name)) return [`${label}.name must be a non-empty string`];
-    const slug = optionSlug(record.name);
+    if (typeof record.name !== 'string' || !record.name.trim()) return [`${label}.name must be a non-empty string`];
+    if (record.slug !== undefined && (typeof record.slug !== 'string' || !optionSlug(record.slug))) return [`${label}.slug must be a non-empty string`];
+    const slug = optionSlug(typeof record.slug === 'string' ? record.slug : record.name);
+    if (!slug) return [`${label} needs a slug when its name has no Latin letters or digits`];
     const errors = stringFields.filter(key => record[key] !== undefined && typeof record[key] !== 'string').map(key => `${label}.${key} must be a string`);
     if (slug === BASE) errors.push(`${label}.name "${record.name}" is reserved for the base option`);
     if (seen.has(slug)) errors.push(`${label}.name "${record.name}" duplicates slug "${slug}"`);

@@ -1,6 +1,10 @@
 import { component$, useStyles$ } from "@builder.io/qwik";
 import type { DocumentHead } from "@builder.io/qwik-city";
+import { useLocation } from "@builder.io/qwik-city";
 import styles from './styles.css?inline';
+import { langOf } from "~/i18n";
+import { t } from "~/i18n/messages";
+import { projectDescriptions } from "~/i18n/pages/projects";
 
 export interface Project {
   title: string;
@@ -49,11 +53,13 @@ export const projects: Project[] = [{
 
 export default component$(() => {
   useStyles$(styles);
+  const lang = langOf(useLocation().url);
+  const describe = (project: Project) => (lang === 'en' ? undefined : projectDescriptions[lang][project.title]) ?? project.description;
   return (
     <>
       <div class="projects-intro">
-        <h1>Projects</h1>
-        <p>Some things I've built, mostly for fun.</p>
+        <h1>{t(lang, 'projects.heading')}</h1>
+        <p>{t(lang, 'projects.intro')}</p>
       </div>
       <div class="project-grid">
         {projects.map((project) => (
@@ -61,7 +67,7 @@ export default component$(() => {
             <img src={`/${project.imagePath}`} width={1200} height={600} alt="" loading="lazy" />
             <div class="body">
               <h2>{project.title} <span aria-hidden="true">↗</span></h2>
-              <p>{project.description}</p>
+              <p>{describe(project)}</p>
             </div>
           </a>
         ))}
@@ -70,6 +76,6 @@ export default component$(() => {
   )
 })
 
-export const head: DocumentHead = {
-  title: 'Sam Slotsky | Projects',
-};
+export const head: DocumentHead = ({ url }) => ({
+  title: t(langOf(url), 'projects.title'),
+});

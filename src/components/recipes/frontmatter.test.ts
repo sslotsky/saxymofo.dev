@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import { readdir, readFile } from 'node:fs/promises';
 import { createRequire } from 'node:module';
 // @ts-ignore Node's native TypeScript runner needs the source extension.
-import { recipeOptionErrors } from './options.ts';
+import { optionKey, recipeOptionErrors } from './options.ts';
 
 // Parse with the same yaml package Qwik City uses to read MDX frontmatter.
 const { parse } = createRequire(import.meta.resolve('@builder.io/qwik-city/vite'))('yaml');
@@ -44,5 +44,30 @@ test('every recipe and the copy-ready template use block lists and valid variati
     assert.deepEqual(flowLists(source), [], `${file.pathname}: items/remove flow lists split ingredients at commas; use block lists`);
     const frontmatter = parse(source.match(/^---\r?\n([\s\S]*?)\r?\n---/)![1]);
     assert.deepEqual(recipeOptionErrors(frontmatter), [], `${file.pathname}: invalid variations or schedules`);
+  }
+});
+
+test('translated recipes keep the English option slugs, ingredient group count and toggle blocks', async () => {
+  const root = new URL('../../routes/recipes/', import.meta.url);
+  const readRecipe = async (file: URL) => {
+    const source = await readFile(file, 'utf8');
+    assert.deepEqual(flowLists(source), [], `${file.pathname}: use block lists`);
+    const frontmatter = parse(source.match(/^---\r?\n([\s\S]*?)\r?\n---/)![1]);
+    assert.deepEqual(recipeOptionErrors(frontmatter), [], `${file.pathname}: invalid variations or schedules`);
+    return {
+      variations: (frontmatter.variations ?? []).map(optionKey),
+      schedules: (frontmatter.schedules ?? []).map(optionKey),
+      groups: frontmatter.ingredients.length,
+      scalable: frontmatter.scalable,
+      blocks: [...source.matchAll(/<(Variation|Schedule) name="([^"]+)"/g)].map(match => `${match[1]}:${match[2]}`),
+    };
+  };
+  for (const lang of ['ru', 'uk']) {
+    const translated = new URL(`../../i18n/content/${lang}/recipes/`, import.meta.url);
+    const names = (await readdir(translated, { withFileTypes: true })).filter(entry => entry.isDirectory()).map(entry => entry.name);
+    assert.ok(names.length > 0, `Expected ${lang} recipes`);
+    for (const name of names) {
+      assert.deepEqual(await readRecipe(new URL(`${name}/index.mdx`, translated)), await readRecipe(new URL(`${name}/index.mdx`, root)), `${lang}/${name} drifted from the English recipe`);
+    }
   }
 });

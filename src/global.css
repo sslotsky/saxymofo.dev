@@ -1,5 +1,6 @@
 @import "@fontsource-variable/fraunces/opsz.css";
 @import "@fontsource-variable/inter/index.css";
+@import "@fontsource-variable/literata/opsz.css";
 
 :root {
   --ink: #121317;
@@ -10,7 +11,7 @@
   --brass: #d6ac57;
   --brass-bright: #f0c96f;
   --plum: #c47aa8;
-  --font-display: "Fraunces Variable", Georgia, serif;
+  --font-display: "Fraunces Variable", "Literata Variable", Georgia, serif;
   --font-body: "Inter Variable", system-ui, -apple-system, "Segoe UI",
     sans-serif;
   --measure: 42rem;
@@ -109,4 +110,32 @@ code {
   border: 1px solid var(--ink-line);
   border-radius: 4px;
   padding: 0.1em 0.35em;
+}
+
+.lang-review {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem 1.25rem;
+  padding: 0.5rem 1rem;
+  background: var(--ink-raised);
+  border-bottom: 1px solid var(--ink-line);
+  color: var(--smoke);
+  font-size: 0.85rem;
+}
+
+.lang-review p {
+  margin: 0;
+}
+
+.lang-review nav {
+  display: flex;
+  gap: 0.75rem;
+}
+
+.lang-review a[aria-current] {
+  color: var(--brass);
+  font-weight: 600;
+  text-decoration: none;
 }

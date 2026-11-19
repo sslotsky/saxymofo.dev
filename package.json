@@ -7,7 +7,7 @@
   },
   "private": true,
   "scripts": {
-    "test": "node --experimental-strip-types --test src/components/recipes/*.test.ts",
+    "test": "node --experimental-strip-types --test src/components/recipes/*.test.ts src/i18n/*.test.ts",
     "build": "qwik build",
     "build.client": "vite build",
     "build.preview": "vite build --ssr src/entry.preview.tsx",
@@ -46,6 +46,7 @@
   "dependencies": {
     "@fontsource-variable/fraunces": "^5.3.0",
     "@fontsource-variable/inter": "^5.3.0",
+    "@fontsource-variable/literata": "^5.3.0",
     "hastscript": "^8.0.0",
     "rehype-external-links": "^3.0.0",
     "rehype-pretty-code": "^0.14.3",

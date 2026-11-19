@@ -1,15 +1,19 @@
 import { component$, createContextId, Slot, useContext } from '@builder.io/qwik';
 import type { Signal } from '@builder.io/qwik';
+import { useLocation } from '@builder.io/qwik-city';
+import { langOf } from '~/i18n';
 import { scaleQuantity } from './quantities';
-import { isActive, optionSlug } from './options';
+import { isActive, optionKey, optionSlug } from './options';
 export { mergeIngredients } from './ingredients';
 export type { Recipe } from './ingredients';
 
 export const recipeContext = createContextId<{ scale: Signal<number>; variation: Signal<string>; schedule: Signal<string> }>('recipe');
 export const variationSlug = optionSlug;
+export { optionKey };
 const InlineQuantity = component$((props: { text: string }) => {
   const state = useContext(recipeContext);
-  return <span>{scaleQuantity(props.text, state.scale.value)}</span>;
+  const lang = langOf(useLocation().url);
+  return <span>{scaleQuantity(props.text, state.scale.value, lang)}</span>;
 });
 export function Q(props: { children?: string }) {
   return <InlineQuantity text={props.children ?? ''} />;
