@@ -36,6 +36,6 @@ export function optionErrors(field: string, options: unknown, stringFields: stri
 }
 
 export function recipeOptionErrors(recipe: Record<string, unknown>) {
-  const names = ['baseVariationName', 'baseScheduleName'].filter(key => recipe[key] !== undefined && typeof recipe[key] !== 'string').map(key => `${key} must be a string`);
+  const names = ['baseVariationName', 'baseScheduleName', 'variationLabel', 'scheduleLabel'].filter(key => recipe[key] !== undefined && typeof recipe[key] !== 'string').map(key => `${key} must be a string`);
   return [...names, ...optionErrors('variations', recipe.variations, ['description']), ...optionErrors('schedules', recipe.schedules, ['description', 'time'])];
 }

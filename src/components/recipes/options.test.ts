@@ -48,5 +48,5 @@ test('option schema rejects reserved, duplicate, empty and non-string fields', (
     'schedules[4] must be an object',
     'schedules[5].time must be a string',
   ]);
-  assert.deepEqual(recipeOptionErrors({ baseScheduleName: 1, variations: [{ name: 'A', description: 2 }] }), ['baseScheduleName must be a string', 'variations[0].description must be a string']);
+  assert.deepEqual(recipeOptionErrors({ baseScheduleName: 1, variationLabel: ['Hydration'], variations: [{ name: 'A', description: 2 }] }), ['baseScheduleName must be a string', 'variationLabel must be a string', 'variations[0].description must be a string']);
 });

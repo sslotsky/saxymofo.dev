@@ -54,14 +54,17 @@ export default component$(() => {
         </div>
       </div>}
       {recipe.value.yield && <p class="recipe-yield">Yield: <strong>{scaleQuantity(String(recipe.value.yield), scale.value)}</strong></p>}
-      {!!recipe.value.variations?.length && <div class="recipe-controls recipe-buttons" role="group" aria-label="Variation">
-        <button aria-pressed={variation.value === BASE} onClick$={() => update({ variation: BASE })}>{recipe.value.baseVariationName ?? 'Classic'}</button>
-        {recipe.value.variations.map(v => <button key={v.name} aria-pressed={variation.value === variationSlug(v.name)} onClick$={() => update({ variation: variationSlug(v.name) })}>{v.name}</button>)}
+      {!!recipe.value.variations?.length && <div class="recipe-controls">
+        <strong>{recipe.value.variationLabel ?? 'Variation'}</strong>
+        <div class="recipe-buttons" role="group" aria-label={recipe.value.variationLabel ?? 'Variation'}>
+          <button aria-pressed={variation.value === BASE} onClick$={() => update({ variation: BASE })}>{recipe.value.baseVariationName ?? 'Classic'}</button>
+          {recipe.value.variations.map(v => <button key={v.name} aria-pressed={variation.value === variationSlug(v.name)} onClick$={() => update({ variation: variationSlug(v.name) })}>{v.name}</button>)}
+        </div>
       </div>}
       {selected.value?.description && <p>{selected.value.description}</p>}
       {!!recipe.value.schedules?.length && <div class="recipe-controls">
-        <strong>Schedule</strong>
-        <div class="recipe-buttons" role="group" aria-label="Schedule">
+        <strong>{recipe.value.scheduleLabel ?? 'Schedule'}</strong>
+        <div class="recipe-buttons" role="group" aria-label={recipe.value.scheduleLabel ?? 'Schedule'}>
           <button aria-pressed={schedule.value === BASE} onClick$={() => update({ schedule: BASE })}>{recipe.value.baseScheduleName ?? 'Standard'}</button>
           {recipe.value.schedules.map(s => <button key={s.name} aria-pressed={schedule.value === variationSlug(s.name)} onClick$={() => update({ schedule: variationSlug(s.name) })}>{s.name}</button>)}
         </div>
