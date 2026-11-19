@@ -1,5 +1,5 @@
 import { component$, useSignal, useTask$ } from "@builder.io/qwik";
-import { Q, Variation } from '../recipes/recipe';
+import { Q, Schedule, Variation } from '../recipes/recipe';
 
 export default function copyToClipboard(text: string) {
   return navigator.clipboard.writeText(text);
@@ -33,6 +33,7 @@ export function useMDXComponents() {
 
   return {
     Q,
+    Schedule,
     Variation,
     CopyButton: component$((props: { rawText: string }) => {
       const copied = useSignal(false);

@@ -8,6 +8,9 @@ yield: 4 servings
 time: 30 min
 # scalable: false # Hide scale controls for a fixed meal plan.
 # baseVariationName: Classic # Label for the base variation tab.
+# baseScheduleName: Standard # Label for the base schedule tab.
+# variationLabel: Variation # Heading above the variation tabs.
+# scheduleLabel: Schedule # Heading above the schedule tabs.
 ingredients:
   - group: Main
     items:
@@ -28,6 +31,11 @@ variations:
         items:
           - 200 g quinoa
           - salt to taste
+# Schedules are a second, independent toggle for timing (no ingredient changes); omit to hide it.
+schedules:
+  - name: Make Ahead
+    description: Cook the night before and reheat.
+    time: 2 days # Replaces the recipe time while this schedule is active.
 ---
 
 ## Method
@@ -36,3 +44,6 @@ Cook with <Q>400 ml</Q> water.
 
 <Variation name="base">Serve simply.</Variation>
 <Variation name="With Herbs">Fold in the herbs before serving.</Variation>
+
+<Schedule name="base">Serve right away.</Schedule>
+<Schedule name="Make Ahead">Refrigerate overnight and reheat before serving.</Schedule>
