@@ -1,6 +1,7 @@
 export interface IngredientGroup { group?: string; items: string[] }
 export interface RecipeVariation { name: string; description?: string; ingredients?: IngredientGroup[]; add?: IngredientGroup[]; remove?: string[] }
-export interface Recipe { title: string; description: string; tags?: string[]; yield?: string; time?: string; scalable?: boolean; baseVariationName?: string; ingredients: IngredientGroup[]; variations?: RecipeVariation[] }
+export interface RecipeSchedule { name: string; description?: string; time?: string }
+export interface Recipe { title: string; description: string; tags?: string[]; yield?: string; time?: string; scalable?: boolean; baseVariationName?: string; baseScheduleName?: string; ingredients: IngredientGroup[]; variations?: RecipeVariation[]; schedules?: RecipeSchedule[] }
 
 export function mergeIngredients(base: IngredientGroup[] = [], variation?: RecipeVariation) {
   const groups = base.map(group => ({ ...group, items: group.items.filter(item => !variation?.remove?.some(text => item.toLowerCase().includes(text.toLowerCase()))) }));

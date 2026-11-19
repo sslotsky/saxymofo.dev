@@ -1,6 +1,12 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { readdir, readFile } from 'node:fs/promises';
+import { createRequire } from 'node:module';
+// @ts-ignore Node's native TypeScript runner needs the source extension.
+import { recipeOptionErrors } from './options.ts';
+
+// Parse with the same yaml package Qwik City uses to read MDX frontmatter.
+const { parse } = createRequire(import.meta.resolve('@builder.io/qwik-city/vite'))('yaml');
 
 function flowLists(source: string) {
   const frontmatter = source.match(/^---\r?\n([\s\S]*?)\r?\n---(?:\r?\n|$)/);
@@ -24,7 +30,7 @@ test('ingredient flow-list guard accepts block lists and rejects inline, empty a
   assert.throws(() => flowLists('No frontmatter'), /Expected frontmatter/);
 });
 
-test('every recipe and the copy-ready template use block lists for items and remove', async () => {
+test('every recipe and the copy-ready template use block lists and valid variations and schedules', async () => {
   const root = new URL('../../routes/recipes/', import.meta.url);
   const directories = (await readdir(root, { withFileTypes: true })).filter(entry => entry.isDirectory());
   const files = (await Promise.all(directories.map(async entry => {
@@ -34,6 +40,9 @@ test('every recipe and the copy-ready template use block lists for items and rem
   assert.ok(files.length > 0, 'Expected recipe files');
   files.push(new URL('../../../docs/recipe-template.mdx', import.meta.url));
   for (const file of files) {
-    assert.deepEqual(flowLists(await readFile(file, 'utf8')), [], `${file.pathname}: items/remove flow lists split ingredients at commas; use block lists`);
+    const source = await readFile(file, 'utf8');
+    assert.deepEqual(flowLists(source), [], `${file.pathname}: items/remove flow lists split ingredients at commas; use block lists`);
+    const frontmatter = parse(source.match(/^---\r?\n([\s\S]*?)\r?\n---/)![1]);
+    assert.deepEqual(recipeOptionErrors(frontmatter), [], `${file.pathname}: invalid variations or schedules`);
   }
 });
