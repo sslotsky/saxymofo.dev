@@ -7,78 +7,101 @@ tags:
   - breakfast
 yield: 1 toaster loaf (8.5" x 4.5")
 time: 1 day
-variationLabel: Dough
-baseVariationName: 75% Hydration
-baseScheduleName: Same-Day Bake
+axes:
+  - id: hydration
+    label: Hydration
+    default: "75"
+    legacyParam: v
+    options:
+      - slug: "67"
+        label: 67% (Sandwich)
+        description: Stiffer, easy-to-handle dough with a tight, uniform sandwich crumb.
+        legacy:
+          - 67-hydration-sandwich
+        params:
+          water: 250
+      - slug: "75"
+        label: 75% (Standard)
+        description: Airy, open toaster crumb developed with gentle coil folds.
+        params:
+          water: 280
+      - slug: "80"
+        label: 80% (Ultra-Open)
+        description: High-hydration, custardy crumb for experienced wet-dough handling.
+        legacy:
+          - 80-hydration-ultra-open
+        params:
+          water: 300
+  - id: flour
+    label: Flour Blend
+    default: 0-www
+    legacyParam: v
+    options:
+      - slug: 0-www
+        label: All White
+        description: Classic light sourdough crumb using high-protein bread flour.
+        params:
+          whiteFlour: 375
+          whiteFlourName: unbleached bread flour
+          wwFlour: 0
+          feedWhiteFlour: 50
+          feedWwFlour: 0
+      - slug: 25-www
+        label: 25% White Whole Wheat
+        description: Adds nutty flavor, light fiber, and easier dough handling while keeping a tall rise. Uses a 50/50 starter feed.
+        legacy:
+          - 25-white-whole-wheat
+        params:
+          whiteFlour: 280
+          whiteFlourName: unbleached all-purpose or bread flour
+          wwFlour: 95
+          feedWhiteFlour: 25
+          feedWwFlour: 25
+      - slug: 40-www
+        label: 40% White Whole Wheat
+        description: Heartier, higher-fiber loaf with extra water absorption and a sturdy crumb for thick spreads. Uses a 100% white whole wheat starter feed.
+        legacy:
+          - 40-white-whole-wheat
+        params:
+          whiteFlour: 225
+          whiteFlourName: unbleached all-purpose or bread flour
+          wwFlour: 150
+          feedWhiteFlour: 0
+          feedWwFlour: 50
+  - id: schedule
+    label: Schedule
+    default: same-day
+    legacyParam: s
+    options:
+      - slug: same-day
+        label: Same-Day Bake
+        description: Mix in the morning, bulk ferment on the counter, and bake the same evening.
+      - slug: overnight-pan
+        label: Overnight Pan Proof
+        description: Bulk ferment and shape on Day 1, chill in the loaf pan overnight, and bake on Day 2.
+        time: 2 days (bake Day 2 morning)
+        legacy:
+          - overnight-pan-proof
+      - slug: overnight-bulk
+        label: Overnight Bulk Ferment
+        description: Cold-ferment in the bowl overnight after coil folds, then shape and proof on Day 2.
+        time: 2 days
+        legacy:
+          - overnight-bulk-ferment
 ingredients:
-  - group: Dough
-    items:
-      - 375 g unbleached bread flour (about 3 cups)
-      - 280 g lukewarm water (about 1 cup + 3 tbsp)
-      - 75 g active sourdough starter, 100% hydration (about 1/3 cup)
-      - 8 g fine sea salt (about 1 1/2 tsp)
-  - group: Starter Feed (Friday Night)
+  - group: Starter Feed (Night Before)
     items:
       - 25 g sourdough starter scrapings
       - 50 g lukewarm water
-      - 50 g unbleached all-purpose flour
-variations:
-  - name: 67% Hydration (Sandwich)
-    description: Lower-hydration dough for a tighter, sturdier crumb and easier shaping.
-    ingredients:
-      - group: Dough
-        items:
-          - 375 g unbleached bread flour (about 3 cups)
-          - 250 g lukewarm water (about 1 cup + 1 tbsp)
-          - 75 g active sourdough starter, 100% hydration (about 1/3 cup)
-          - 8 g fine sea salt (about 1 1/2 tsp)
-  - name: 80% Hydration (Ultra-Open)
-    description: Very wet dough for a custardy, open crumb; requires confident coil-fold handling.
-    ingredients:
-      - group: Dough
-        items:
-          - 375 g unbleached bread flour (about 3 cups)
-          - 300 g lukewarm water (about 1 1/4 cups)
-          - 75 g active sourdough starter, 100% hydration (about 1/3 cup)
-          - 8 g fine sea salt (about 1 1/2 tsp)
-  - name: 25% White Whole Wheat
-    description: Adds nutty flavor, light fiber, and easier dough handling while keeping a tall toaster rise. Uses a 50/50 starter feed.
-    ingredients:
-      - group: Starter Feed (Friday Night)
-        items:
-          - 25 g sourdough starter scrapings
-          - 50 g lukewarm water
-          - 25 g unbleached all-purpose flour
-          - 25 g white whole wheat flour
-      - group: Dough
-        items:
-          - 280 g unbleached all-purpose or bread flour (about 2 1/4 cups)
-          - 95 g white whole wheat flour (about 3/4 cup)
-          - 280 g lukewarm water (about 1 cup + 3 tbsp)
-          - 75 g active sourdough starter, 100% hydration (about 1/3 cup)
-          - 8 g fine sea salt (about 1 1/2 tsp)
-  - name: 40% White Whole Wheat
-    description: Heartier, higher-fiber sandwich loaf with extra water absorption and a sturdy crumb for thick spreads. Uses a 100% white whole wheat starter feed.
-    ingredients:
-      - group: Starter Feed (Friday Night)
-        items:
-          - 25 g sourdough starter scrapings
-          - 50 g lukewarm water
-          - 50 g white whole wheat flour
-      - group: Dough
-        items:
-          - 225 g unbleached all-purpose or bread flour (about 1 3/4 cups)
-          - 150 g white whole wheat flour (about 1 1/4 cups)
-          - 280-290 g lukewarm water (about 1 cup + 3 tbsp)
-          - 75 g active sourdough starter, 100% hydration (about 1/3 cup)
-          - 8 g fine sea salt (about 1 1/2 tsp)
-schedules:
-  - name: Overnight Pan Proof
-    description: Complete bulk fermentation today, shape into the pan, and retard in the fridge overnight.
-    time: 2 days (bake Day 2 morning)
-  - name: Overnight Bulk Ferment
-    description: Chill the dough in the bowl after folds when leaving the house mid-fermentation; shape and bake tomorrow.
-    time: 2 days
+      - "{feedWhiteFlour} g unbleached all-purpose flour"
+      - "{feedWwFlour} g white whole wheat flour"
+  - group: Loaf Dough
+    items:
+      - "{whiteFlour} g {whiteFlourName}"
+      - "{wwFlour} g white whole wheat flour"
+      - "{water} g lukewarm water"
+      - 75 g active sourdough starter, 100% hydration (about 1/3 cup)
+      - 8 g fine sea salt (about 1 1/2 tsp)
 ---
 
 ## Equipment & pan setup
@@ -91,94 +114,88 @@ The method is for one loaf. Each loaf needs its own pair of pans and clips for t
 
 ## Step 1: Starter prep & clean jar swap
 
-1. **Friday night (night before mixing):** Pull your jar of <Q>25 g</Q> starter scrapings from the fridge. Feed it at a **1:2:2 ratio** with the water and flour from the Starter Feed list (<Q>125 g</Q> total). Cover loosely and leave at room temperature overnight until doubled and bubbly.
+1. **Friday night (night before mixing):** Pull your jar of <Q>25 g</Q> starter scrapings from the fridge. Feed it at a **1:2:2 ratio** with the water and your selected flour blend from the Starter Feed list (<Q>125 g</Q> total). Cover loosely and leave at room temperature overnight until doubled and bubbly.
 2. **Clean jar rotation:** Measure <Q>75 g</Q> active starter into your mixing bowl. Spoon ~<Q>25 g</Q> into a fresh, clean jar for next week, discard the rest, and wash the old jar immediately so dried crust never builds up.
 
-<Variation name="base">
+<When flour="0-www">
 
-For the classic white loaf, feed your <Q>25 g</Q> starter scrapings with <Q>50 g</Q> lukewarm water and <Q>50 g</Q> unbleached all-purpose flour. (If you want a more vigorous fermentation boost, you can swap half or all of the feed flour for white whole wheat.)
+For the classic white loaf, feed your <Q>25 g</Q> starter scrapings with <Q>50 g</Q> lukewarm water and <Q param="feedWhiteFlour" unit="g" /> unbleached all-purpose flour. (If you want a more vigorous fermentation boost, you can swap half or all of the feed flour for white whole wheat.)
 
-</Variation>
+</When>
 
-<Variation name="25% White Whole Wheat">
+<When flour="25-www">
 
-**50/50 starter feed:** Feed your <Q>25 g</Q> starter scrapings with <Q>50 g</Q> lukewarm water, <Q>25 g</Q> unbleached all-purpose flour, and <Q>25 g</Q> white whole wheat flour. The added minerals from the whole grain give the yeast a faster, more reliable overnight rise.
+**50/50 starter feed:** Feed your <Q>25 g</Q> starter scrapings with <Q>50 g</Q> lukewarm water, <Q param="feedWhiteFlour" unit="g" /> unbleached all-purpose flour, and <Q param="feedWwFlour" unit="g" /> white whole wheat flour. The added minerals from the whole grain give the yeast a faster, more reliable overnight rise.
 
-</Variation>
+</When>
 
-<Variation name="40% White Whole Wheat">
+<When flour="40-www">
 
-**100% white whole wheat starter feed:** Feed your <Q>25 g</Q> starter scrapings with <Q>50 g</Q> lukewarm water and <Q>50 g</Q> white whole wheat flour. Whole wheat acts as rocket fuel for sluggish refrigerated starters—expect it to peak slightly faster overnight.
+**100% white whole wheat starter feed:** Feed your <Q>25 g</Q> starter scrapings with <Q>50 g</Q> lukewarm water and <Q param="feedWwFlour" unit="g" /> white whole wheat flour. Whole wheat acts as rocket fuel for sluggish refrigerated starters—expect it to peak slightly faster overnight.
 
-</Variation>
+</When>
 
 ## Step 2: Mix & gluten development
 
-1. **Mix:** Whisk <Q>75 g</Q> active starter into the water until milky. Add the flour and <Q>8 g</Q> fine sea salt, mixing by hand until no dry flour remains. Cover and rest 30 minutes.
+1. **Mix:** Whisk <Q>75 g</Q> active starter into <Q param="water" unit="g" /> lukewarm water until milky. Add the flour and <Q>8 g</Q> fine sea salt, mixing by hand until no dry flour remains. Cover and rest 30 minutes.
 
-<Variation name="base">
+<When hydration="75">
 2. **Coil folds (75% hydration):** Perform **4 rounds of coil folds** spaced 30 minutes apart over 2 hours. Dip hands in water, slide fingers under the center of the dough, lift straight up so the ends hang and coil underneath as you set it back down, and rotate 90° four times per round.
-</Variation>
-<Variation name="67% Hydration (Sandwich)">
+</When>
+<When hydration="67">
 2. **Stretch & folds (67% hydration):** Perform **3 to 4 rounds of standard stretch-and-folds** spaced 30 minutes apart over 2 hours. Grab one edge, pull upward, and fold over the center; rotate 90° four times per round.
-</Variation>
-<Variation name="80% Hydration (Ultra-Open)">
+</When>
+<When hydration="80">
 2. **Gentle coil folds (80% hydration):** Perform **5 rounds of gentle coil folds** spaced 30 minutes apart over 2.5 hours using wet hands. Avoid tearing the thin gluten web as the dough becomes airy and jiggly.
-</Variation>
-<Variation name="25% White Whole Wheat">
-2. **Coil folds (25% white whole wheat):** Perform **4 rounds of coil folds** spaced 30 minutes apart over 2 hours. Dip hands in water, slide fingers under the center of the dough, lift straight up so the ends hang and coil underneath as you set it back down, and rotate 90° four times per round.
-</Variation>
-<Variation name="40% White Whole Wheat">
-2. **Coil folds (40% white whole wheat):** Perform **4 rounds of coil folds** spaced 30 minutes apart over 2 hours. Dip hands in water, slide fingers under the center of the dough, lift straight up so the ends hang and coil underneath as you set it back down, and rotate 90° four times per round.
-</Variation>
+</When>
 
-<Variation name="25% White Whole Wheat">
+<When flour="25-www">
 
-Because white whole wheat absorbs more moisture than white flour, this <Q>280 g</Q> water dough (~75% hydration) will feel noticeably drier, less sticky, and easier to shape on a lightly misted counter—closer to a 67% white dough. You can use unbleached all-purpose flour for the white portion without losing loaf height.
+Because white whole wheat absorbs more moisture than white flour, this <Q param="water" unit="g" /> water dough will feel noticeably drier, less sticky, and easier to shape than the same hydration with all white flour—roughly one hydration step stiffer. You can use unbleached all-purpose flour for the white portion without losing loaf height.
 
-</Variation>
+</When>
 
-<Variation name="40% White Whole Wheat">
+<When flour="40-www" hydration="75,80">
 
-White whole wheat bran absorbs significantly more water, so start with <Q>280 g</Q> water and add up to <Q>10 g</Q> more if the dough feels stiff during mixing. The higher bran content creates a slightly denser, hearty crumb that holds up well to heavy spreads without turning gummy.
+White whole wheat bran absorbs significantly more water, so add up to <Q>10 g</Q> more water if the dough feels stiff during mixing. The higher bran content creates a slightly denser, hearty crumb that holds up well to heavy spreads without turning gummy.
 
-</Variation>
+</When>
+
+<When flour="40-www" hydration="67">
+
+**Absorption note:** Because 40% white whole wheat bran absorbs significantly more moisture than white flour, <Q param="water" unit="g" /> water (67% hydration) will feel quite stiff. Add an extra <Q>15 g</Q> to <Q>25 g</Q> of water if dry flour pockets remain during mixing. The higher bran content creates a slightly denser, hearty crumb that holds up well to heavy spreads.
+
+</When>
 
 ## Step 3: Fermentation, shaping & proofing
 
-<Schedule name="base">
+<When schedule="same-day">
 1. **Room-temperature bulk rise:** Cover the bowl and ferment at room temperature until grown by **50–70%**, domed on top, with an extensive bubble network visible through the sides (typically 4–6 hours after mixing). Cool kitchens take longer—trust the growth, not the clock.
 2. **Shape & pan:** Lightly oil one 8.5" x 4.5" loaf pan. Shape the dough into a cylinder (see the shaping guide below) and place seam-side down in the pan.
 3. **Final pan proof:** Cover with a damp towel or inverted bowl and let rise at room temperature until the dough crowns **1 full inch above the pan rim** (2.5–4 hours).
-</Schedule>
-<Schedule name="Overnight Pan Proof">
+</When>
+<When schedule="overnight-pan">
 1. **Day 1 room-temperature bulk rise:** Ferment at room temperature until grown by **50–70%**, domed on top, with strong side bubbles.
 2. **Shape & chill overnight:** Lightly oil one 8.5" x 4.5" loaf pan, shape the dough into a cylinder (see the shaping guide below), and place seam-side down in the pan. Cover tightly with plastic wrap or an inverted bag or bowl so the surface cannot dry out, and refrigerate overnight (8–16 hours).
 3. **Day 2 final pan proof:** Pull the covered pan from the fridge and let it sit on the counter until the dough warms up and crowns **1 full inch above the pan rim** (typically **2 to 4 hours**).
-</Schedule>
-<Schedule name="Overnight Bulk Ferment">
+</When>
+<When schedule="overnight-bulk">
 1. **Day 1 head start & chill:** After your final fold, let the dough rest at room temperature for at least **1 hour** so fermentation is underway. Before leaving the house (and before the dough peaks), cover the bowl tightly and place it straight into the fridge overnight. *(If the dough has already grown 50–70% before you leave, shape it into the pan now and switch to the **Overnight Pan Proof** schedule.)*
 2. **Day 2 finish bulk & shape:** Pull the cold bowl from the fridge and let it sit at room temperature until bulk rise reaches **50–70% total growth** with strong side bubbles. Shape into a lightly oiled 8.5" x 4.5" loaf pan (see the shaping guide below).
 3. **Day 2 final pan proof:** Cover the pan and let rise on the counter until the crown swells **1 full inch above the pan rim** (typically **4 to 6 hours** from cold).
-</Schedule>
+</When>
 
 ### Shaping guide
 
-<Variation name="base">
+<When hydration="75">
 - **Misted counter & envelope roll:** Lightly mist a bare countertop with water and wet your fingertips. Gently turn out the dough, stretch into a loose ~8" rectangle, fold the left and right thirds inward like a business letter, and lightly roll into a cylinder. Slide a **wet bench scraper** underneath to cradle it and drop it seam-side down into the oiled pan.
-</Variation>
-<Variation name="67% Hydration (Sandwich)">
+</When>
+<When hydration="67">
 - **Flour-the-top flip:** Turn the dough onto a **bare, dry counter** (no flour or water underneath). Lightly dust *only the top* with flour, slide a scraper underneath to flip it floured-side down, pat into an 8" rectangle, and roll tightly into a cylinder so the sticky unfloured side seals to itself. Place seam-side down in the oiled pan.
-</Variation>
-<Variation name="80% Hydration (Ultra-Open)">
+</When>
+<When hydration="80">
 - **Light-touch wet transfer:** Mist the counter lightly and keep hands wet. Gently coax the dough into a loose rectangle without degassing, letter-fold the thirds, tuck the ends lightly, and use a wet bench scraper in one confident scooping motion to transfer it seam-side down into the oiled pan.
-</Variation>
-<Variation name="25% White Whole Wheat">
-- **Misted counter & envelope roll:** Lightly mist a bare countertop with water and wet your fingertips. Gently turn out the dough, stretch into a loose ~8" rectangle, fold the left and right thirds inward like a business letter, and lightly roll into a cylinder. Slide a **wet bench scraper** underneath to cradle it and drop it seam-side down into the oiled pan.
-</Variation>
-<Variation name="40% White Whole Wheat">
-- **Misted counter & envelope roll:** Lightly mist a bare countertop with water and wet your fingertips. Gently turn out the dough, stretch into a loose ~8" rectangle, fold the left and right thirds inward like a business letter, and lightly roll into a cylinder. Slide a **wet bench scraper** underneath to cradle it and drop it seam-side down into the oiled pan.
-</Variation>
+</When>
 
 ## Step 4: Cold-dome steam bake (no pan preheating)
 

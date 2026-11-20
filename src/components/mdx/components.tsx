@@ -1,7 +1,7 @@
 import { component$, Slot, useSignal, useTask$ } from "@builder.io/qwik";
 import { useLocation } from "@builder.io/qwik-city";
 import { langOf, localHref } from "~/i18n";
-import { Q, Schedule, Variation } from '../recipes/recipe';
+import { Q, Schedule, Variation, When } from '../recipes/recipe';
 
 export default function copyToClipboard(text: string) {
   return navigator.clipboard.writeText(text);
@@ -41,6 +41,7 @@ export function useMDXComponents() {
     Q,
     Schedule,
     Variation,
+    When,
     CopyButton: component$((props: { rawText: string }) => {
       const copied = useSignal(false);
       useTask$(({ track }) => {
