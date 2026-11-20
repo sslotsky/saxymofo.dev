@@ -2,6 +2,7 @@ import { component$, Slot, useSignal, useTask$ } from "@builder.io/qwik";
 import { useLocation } from "@builder.io/qwik-city";
 import { langOf, localHref } from "~/i18n";
 import { Q, Schedule, Variation, When } from '../recipes/recipe';
+import { Ref } from '../recipe/Ref';
 
 export default function copyToClipboard(text: string) {
   return navigator.clipboard.writeText(text);
@@ -39,6 +40,7 @@ export function useMDXComponents() {
       return <a {...props} href={localHref(props.href, langOf(loc.url))}><Slot /></a>;
     }),
     Q,
+    Ref,
     Schedule,
     Variation,
     When,

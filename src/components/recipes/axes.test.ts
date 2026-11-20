@@ -1,6 +1,5 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-// @ts-ignore Node's native TypeScript runner needs the source extension.
 import {
   axisErrors,
   axisParams,
@@ -9,6 +8,7 @@ import {
   matchesWhen,
   resolveGroups,
   resolveLine,
+  // @ts-ignore Node's native TypeScript runner needs the source extension.
 } from "./axes.ts";
 
 const axes = [

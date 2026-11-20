@@ -10,12 +10,19 @@ import styles from './styles.css?inline';
 import { langOf, localHref } from '~/i18n';
 import { t, tagLabel } from '~/i18n/messages';
 import { PageContent, useLocalizedHead } from '~/i18n/page';
+import { hasAffiliateReferences } from '~/components/recipes/references';
+
+const sources = import.meta.glob<string>(['./**/index.mdx', '../../i18n/content/*/recipes/**/index.mdx'], { query: '?raw', import: 'default', eager: true });
+const affiliateRecipes: Record<string, boolean | undefined> = Object.fromEntries(Object.entries(sources).map(([file, source]) => [file, hasAffiliateReferences(source)]));
 
 export default component$(() => {
   useStyles$(styles);
   const head = useLocalizedHead();
   const loc = useLocation();
   const lang = langOf(loc.url);
+  const file = `${loc.url.pathname.replace('/recipes/', '')}index.mdx`;
+  const translatedFile = `../../i18n/content/${lang}/recipes/${file}`;
+  const hasAffiliateLinks = affiliateRecipes[translatedFile] ?? affiliateRecipes[`./${file}`] ?? false;
   const search = useSignal(loc.url.search);
   useTask$(({ track }) => {
     search.value = track(() => loc.url.search);
@@ -56,6 +63,7 @@ export default component$(() => {
       {recipe.value.tags?.map(tag => <span class="recipe-tag" key={tag}>{tagLabel(lang, tag)}</span>)}
     </div>
     <section class="recipe-panel" aria-label={t(lang, 'recipes.panel')}>
+      {hasAffiliateLinks && <p class="recipe-disclosure"><em>{t(lang, 'recipes.disclosure')}</em></p>}
       {recipe.value.scalable !== false && <div class="recipe-controls">
         <strong>{t(lang, 'recipes.scaleHeading')}</strong>
         <div class="recipe-buttons" role="group" aria-label={t(lang, 'recipes.scaleGroup')}>

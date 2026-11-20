@@ -1,6 +1,7 @@
 .recipe-back, .recipe-eyebrow { color: var(--brass); font-size: .85rem; letter-spacing: .06em; }
 .recipe-back { display: inline-block; margin-bottom: 1.5rem; }
 .recipe-description { color: var(--smoke); font-size: 1.15rem; }
+.recipe-disclosure { color: var(--smoke); font-size: .85rem; }
 .recipe-meta, .recipe-buttons { display: flex; flex-wrap: wrap; align-items: center; gap: .6rem; }
 .recipe-meta { margin: 1rem 0 1.75rem; color: var(--smoke); font-size: .9rem; }
 .recipe-tag { border: 1px solid var(--ink-line); border-radius: 999px; padding: .1rem .7rem; }
