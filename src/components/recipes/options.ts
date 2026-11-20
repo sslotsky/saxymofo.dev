@@ -1,3 +1,5 @@
+// @ts-ignore Node's native TypeScript runner needs the source extension.
+import { axisErrors } from './axes.ts';
 export const BASE = 'base';
 
 export const optionSlug = (name: string) => name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
@@ -41,5 +43,5 @@ export function optionErrors(field: string, options: unknown, stringFields: stri
 
 export function recipeOptionErrors(recipe: Record<string, unknown>) {
   const names = ['baseVariationName', 'baseScheduleName', 'variationLabel', 'scheduleLabel'].filter(key => recipe[key] !== undefined && typeof recipe[key] !== 'string').map(key => `${key} must be a string`);
-  return [...names, ...optionErrors('variations', recipe.variations, ['description']), ...optionErrors('schedules', recipe.schedules, ['description', 'time'])];
+  return [...names, ...optionErrors('variations', recipe.variations, ['description']), ...optionErrors('schedules', recipe.schedules, ['description', 'time']), ...axisErrors(recipe.axes)];
 }

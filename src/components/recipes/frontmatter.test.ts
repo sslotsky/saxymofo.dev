@@ -4,6 +4,7 @@ import { readdir, readFile } from 'node:fs/promises';
 import { createRequire } from 'node:module';
 // @ts-ignore Node's native TypeScript runner needs the source extension.
 import { optionKey, recipeOptionErrors } from './options.ts';
+import type { Axis } from './axes';
 
 // Parse with the same yaml package Qwik City uses to read MDX frontmatter.
 const { parse } = createRequire(import.meta.resolve('@builder.io/qwik-city/vite'))('yaml');
@@ -47,7 +48,7 @@ test('every recipe and the copy-ready template use block lists and valid variati
   }
 });
 
-test('translated recipes keep the English option slugs, ingredient group count and toggle blocks', async () => {
+test('translated recipes keep the English option slugs, axes, ingredient group count and toggle blocks', async () => {
   const root = new URL('../../routes/recipes/', import.meta.url);
   const readRecipe = async (file: URL) => {
     const source = await readFile(file, 'utf8');
@@ -59,7 +60,8 @@ test('translated recipes keep the English option slugs, ingredient group count a
       schedules: (frontmatter.schedules ?? []).map(optionKey),
       groups: frontmatter.ingredients.length,
       scalable: frontmatter.scalable,
-      blocks: [...source.matchAll(/<(Variation|Schedule) name="([^"]+)"/g)].map(match => `${match[1]}:${match[2]}`),
+      axes: (frontmatter.axes ?? []).map((axis: Axis) => ({ id: axis.id, default: axis.default, legacyParam: axis.legacyParam, options: axis.options.map(o => ({ slug: o.slug, legacy: o.legacy, params: Object.keys(o.params ?? {}) })) })),
+      blocks: [...source.matchAll(/<(Variation|Schedule) name="([^"]+)"|<When ([^>]+)>|<Q param="(\w+)"/g)].map(match => match[0]),
     };
   };
   for (const lang of ['ru', 'uk']) {

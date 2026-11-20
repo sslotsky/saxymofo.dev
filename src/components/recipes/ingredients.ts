@@ -1,7 +1,8 @@
+import type { Axis } from './axes';
 export interface IngredientGroup { group?: string; items: string[] }
 export interface RecipeVariation { name: string; slug?: string; description?: string; ingredients?: IngredientGroup[]; add?: IngredientGroup[]; remove?: string[] }
 export interface RecipeSchedule { name: string; slug?: string; description?: string; time?: string }
-export interface Recipe { title: string; description: string; tags?: string[]; yield?: string; time?: string; scalable?: boolean; baseVariationName?: string; baseScheduleName?: string; variationLabel?: string; scheduleLabel?: string; ingredients: IngredientGroup[]; variations?: RecipeVariation[]; schedules?: RecipeSchedule[] }
+export interface Recipe { axes?: Axis[]; title: string; description: string; tags?: string[]; yield?: string; time?: string; scalable?: boolean; baseVariationName?: string; baseScheduleName?: string; variationLabel?: string; scheduleLabel?: string; ingredients: IngredientGroup[]; variations?: RecipeVariation[]; schedules?: RecipeSchedule[] }
 
 export function mergeIngredients(base: IngredientGroup[] = [], variation?: RecipeVariation) {
   const groups = base.map(group => ({ ...group, items: group.items.filter(item => !variation?.remove?.some(text => item.toLowerCase().includes(text.toLowerCase()))) }));
