@@ -95,3 +95,17 @@ test('english parsing ignores cyrillic-only syntax', () => {
   assert.equal(scaleQuantity('1,5 cups', 2), '1,5 cups');
   assert.deepEqual(parseQuantity('1,5 стакана', 'ru')?.amounts, [1.5]);
 });
+
+test('recipe zest and handful quantities scale with counted nouns in every language', () => {
+  for (const [lang, line, expected] of [
+    ['en', '1 medium orange, zest only', '2 medium oranges, zest only'],
+    ['en', '1 medium orange', '2 medium oranges'],
+    ['en', '1 handful roasted cashew halves or sliced almonds', '2 handfuls roasted cashew halves or sliced almonds'],
+    ['ru', '1 апельсин среднего размера, только цедра', '2 апельсина среднего размера, только цедра'],
+    ['ru', '1 апельсин среднего размера', '2 апельсина среднего размера'],
+    ['ru', '1 горсть жареных половинок кешью или миндальных лепестков', '2 горсти жареных половинок кешью или миндальных лепестков'],
+    ['uk', '1 апельсин середнього розміру, лише цедра', '2 апельсини середнього розміру, лише цедра'],
+    ['uk', '1 апельсин середнього розміру', '2 апельсини середнього розміру'],
+    ['uk', '1 жменя смажених половинок кеш’ю або мигдалевих пелюсток', '2 жмені смажених половинок кеш’ю або мигдалевих пелюсток'],
+  ] as const) assert.equal(scaleQuantity(line, 2, lang), expected);
+});
