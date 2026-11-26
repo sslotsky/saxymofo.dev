@@ -44,7 +44,7 @@ function format(n: number, unit: string, lang: Lang): string {
   return [whole || '', nearest[1]].filter(Boolean).join(' ') || '0';
 }
 
-const units: Record<string, string> = { cup: 'cups', can: 'cans', loaf: 'loaves', clove: 'cloves', head: 'heads', slice: 'slices', jar: 'jars', pinch: 'pinches', handful: 'handfuls', pepper: 'peppers', batch: 'batches', serving: 'servings', portion: 'portions', egg: 'eggs' };
+const units: Record<string, string> = { cup: 'cups', can: 'cans', loaf: 'loaves', clove: 'cloves', head: 'heads', slice: 'slices', jar: 'jars', pinch: 'pinches', handful: 'handfuls', pepper: 'peppers', batch: 'batches', serving: 'servings', portion: 'portions', egg: 'eggs', orange: 'oranges' };
 
 type Forms = Record<Intl.LDMLPluralRule, string>;
 const forms = (one: string, few: string, many: string, other = few): Partial<Forms> => ({ one, few, many, other });
@@ -55,7 +55,7 @@ const cyrillicUnits: Record<'ru' | 'uk', Partial<Forms>[]> = {
     forms('щепотка', 'щепотки', 'щепоток'), forms('горсть', 'горсти', 'горстей'), forms('яйцо', 'яйца', 'яиц'),
     forms('порция', 'порции', 'порций'), forms('штука', 'штуки', 'штук'), forms('пучок', 'пучка', 'пучков'),
     forms('лист', 'листа', 'листов'), forms('стручок', 'стручка', 'стручков'), forms('луковица', 'луковицы', 'луковиц'),
-    forms('лайм', 'лайма', 'лаймов'), forms('лимон', 'лимона', 'лимонов'), forms('фунт', 'фунта', 'фунтов'),
+    forms('лайм', 'лайма', 'лаймов'), forms('лимон', 'лимона', 'лимонов'), forms('фунт', 'фунта', 'фунтов'), forms('апельсин', 'апельсина', 'апельсинов'),
     forms('батон', 'батона', 'батонов'), forms('перец', 'перца', 'перцев'),
     forms('блин', 'блина', 'блинов'), forms('тортилья', 'тортильи', 'тортилий'),
   ],
@@ -65,7 +65,7 @@ const cyrillicUnits: Record<'ru' | 'uk', Partial<Forms>[]> = {
     forms('дрібка', 'дрібки', 'дрібок'), forms('жменя', 'жмені', 'жмень'), forms('яйце', 'яйця', 'яєць'),
     forms('порція', 'порції', 'порцій'), forms('штука', 'штуки', 'штук'), forms('пучок', 'пучки', 'пучків', 'пучка'),
     forms('лист', 'листи', 'листів', 'листа'), forms('стручок', 'стручки', 'стручків', 'стручка'), forms('цибулина', 'цибулини', 'цибулин'),
-    forms('лайм', 'лайми', 'лаймів', 'лайма'), forms('лимон', 'лимони', 'лимонів', 'лимона'), forms('фунт', 'фунти', 'фунтів', 'фунта'),
+    forms('лайм', 'лайми', 'лаймів', 'лайма'), forms('лимон', 'лимони', 'лимонів', 'лимона'), forms('фунт', 'фунти', 'фунтів', 'фунта'), forms('апельсин', 'апельсини', 'апельсинів'),
     forms('батон', 'батони', 'батонів', 'батона'), forms('перець', 'перці', 'перців', 'перцю'),
     forms('млинець', 'млинці', 'млинців', 'млинця'), forms('тортилья', 'тортильї', 'тортилій'),
   ],
